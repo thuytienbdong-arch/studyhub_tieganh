@@ -1,0 +1,1885 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>B1-104 Master Hub | BETMA VSTEP Pro</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#312e81'
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      padding-bottom: calc(4.75rem + env(safe-area-inset-bottom));
+    }
+    @media (min-width: 768px) {
+      body { padding-bottom: 2rem; }
+    }
+    /* 3D Flashcard Flip */
+    .perspective-1000 { perspective: 1000px; }
+    .transform-style-3d { transform-style: preserve-3d; }
+    .backface-hidden { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+    .rotate-y-180 { transform: rotateY(180deg); }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.4); border-radius: 9999px; }
+    .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+    @keyframes pulse-urgent {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.75; transform: scale(1.03); }
+    }
+    .urgent-timer { animation: pulse-urgent 1s infinite; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-200 selection:bg-indigo-500 selection:text-white">
+
+  <!-- TOP HEADER -->
+  <header class="sticky top-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 h-16 flex items-center justify-between gap-2">
+      <!-- Logo -->
+      <div class="flex items-center gap-2.5 min-w-0">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-white font-extrabold text-base shadow-md shadow-indigo-500/20 shrink-0">
+          B1
+        </div>
+        <div class="truncate">
+          <div class="flex items-center gap-1.5">
+            <h1 class="font-extrabold text-base sm:text-lg tracking-tight truncate">B1-104 Master Hub</h1>
+            <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">PRO v2.0</span>
+          </div>
+          <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 truncate">BETMA VSTEP • Hệ thống Luyện thi Đa thiết bị</p>
+        </div>
+      </div>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center gap-1 bg-slate-100 dark:bg-slate-800/80 p-1 rounded-xl">
+        <button onclick="switchTab('ideas')" data-tab="ideas" class="nav-btn px-3.5 py-2 rounded-lg text-sm font-semibold transition">📚 Kho Idea (62)</button>
+        <button onclick="switchTab('flashcards')" data-tab="flashcards" class="nav-btn px-3.5 py-2 rounded-lg text-sm font-semibold transition">🗂️ Flashcards & Nói</button>
+        <button onclick="switchTab('quiz')" data-tab="quiz" class="nav-btn px-3.5 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-1.5">
+          🎯 Trắc nghiệm
+          <span id="desktop-weak-badge" class="hidden px-1.5 py-0.2 text-[10px] font-bold rounded-full bg-rose-500 text-white">0</span>
+        </button>
+        <button onclick="switchTab('studio')" data-tab="studio" class="nav-btn px-3.5 py-2 rounded-lg text-sm font-semibold transition">✍️ Studio & Thi thử</button>
+        <button onclick="switchTab('samples')" data-tab="samples" class="nav-btn px-3.5 py-2 rounded-lg text-sm font-semibold transition">📖 Bài mẫu & GitHub</button>
+      </nav>
+
+      <!-- Right Controls: Voice Settings + Theme + Progress -->
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <!-- Voice Accent & Speed Quick Pill -->
+        <div class="hidden sm:flex items-center bg-slate-100 dark:bg-slate-800 rounded-lg px-2 py-1 text-xs gap-1.5 border border-slate-200 dark:border-slate-700">
+          <span title="Giọng đọc">🔊</span>
+          <select id="voice-accent" onchange="saveVoicePrefs()" class="bg-transparent font-semibold text-slate-700 dark:text-slate-200 focus:outline-none cursor-pointer">
+            <option value="en-US">US</option>
+            <option value="en-GB">UK</option>
+          </select>
+          <span class="text-slate-300 dark:text-slate-600">|</span>
+          <select id="voice-rate" onchange="saveVoicePrefs()" class="bg-transparent font-semibold text-slate-700 dark:text-slate-200 focus:outline-none cursor-pointer">
+            <option value="0.75">0.75x</option>
+            <option value="1" selected>1.0x</option>
+            <option value="1.2">1.2x</option>
+          </select>
+        </div>
+
+        <!-- Streak / Mastered Counter -->
+        <div class="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 text-emerald-700 dark:text-emerald-300 text-xs font-bold" title="Số thẻ đã thuộc">
+          <span>⭐</span>
+          <span id="mastered-count">0</span><span>/62</span>
+        </div>
+
+        <!-- Dark Mode Toggle -->
+        <button onclick="toggleDarkMode()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition" title="Đổi giao diện Sáng / Tối">
+          <span id="theme-icon">🌙</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Voice Sub-bar -->
+    <div class="sm:hidden flex items-center justify-between px-3 py-1.5 bg-slate-100/80 dark:bg-slate-800/60 border-t border-slate-200/70 dark:border-slate-800 text-[11px]">
+      <div class="flex items-center gap-2">
+        <span class="font-semibold text-slate-600 dark:text-slate-300">🔊 Giọng đọc:</span>
+        <select id="voice-accent-mobile" onchange="syncVoiceFromMobile()" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-1.5 py-0.5 font-bold">
+          <option value="en-US">Anh-Mỹ (US)</option>
+          <option value="en-GB">Anh-Anh (UK)</option>
+        </select>
+        <select id="voice-rate-mobile" onchange="syncVoiceFromMobile()" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-1.5 py-0.5 font-bold">
+          <option value="0.75">0.75x</option>
+          <option value="1" selected>1.0x</option>
+          <option value="1.2">1.2x</option>
+        </select>
+      </div>
+      <button onclick="switchTab('samples')" class="text-indigo-600 dark:text-indigo-400 font-bold">🚀 Đưa lên GitHub</button>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-7xl mx-auto px-3 sm:px-6 pt-5">
+
+    <!-- ========================================================= -->
+    <!-- TAB 1: KHO TỪ VỰNG & CHUỖI IDEA R-E-F (62 ITEMS)          -->
+    <!-- ========================================================= -->
+    <section id="tab-ideas" class="tab-panel space-y-5">
+      <!-- Hero Banner -->
+      <div class="rounded-2xl bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 p-5 sm:p-6 text-white shadow-lg">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <span class="inline-block px-2.5 py-1 rounded-full bg-white/20 text-xs font-bold tracking-wide mb-2">CHUẨN GIÁO TRÌNH BETMA VSTEP B1-104</span>
+            <h2 class="text-xl sm:text-2xl font-extrabold">Kho 62 Chuỗi Idea Đa Năng (Mô hình R-E-F)</h2>
+            <p class="text-indigo-100 text-xs sm:text-sm mt-1 max-w-2xl">
+              Lắp ghép trực tiếp theo công thức 3 bước: <strong>Luận điểm (Main Point) → Nguyên nhân (Reason) → Kết quả (Effect)</strong>. Bấm <strong>"+ Đưa vào Dàn ý"</strong> để tự động tạo khung bài viết!
+            </p>
+          </div>
+          <div class="flex flex-wrap gap-2 shrink-0">
+            <button onclick="switchTab('studio')" class="px-4 py-2.5 rounded-xl bg-white text-indigo-700 font-bold text-xs sm:text-sm shadow hover:bg-indigo-50 transition flex items-center gap-1.5">
+              <span>⚡ Mở Dàn ý R-E-F</span>
+              <span id="outline-queue-badge" class="px-1.5 py-0.5 rounded-full bg-indigo-600 text-white text-[10px]">0</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search & Filters -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+        <div class="flex flex-col sm:flex-row gap-3">
+          <div class="relative flex-1">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
+            <input id="idea-search" type="text" oninput="renderIdeas()" placeholder="Tìm từ vựng, cụm idea tiếng Anh hoặc tiếng Việt (VD: broaden knowledge, áp lực tài chính, carbon)..." class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-transparent focus:border-indigo-500 focus:bg-white dark:focus:bg-slate-900 text-sm focus:outline-none transition" />
+          </div>
+          <div class="flex gap-2">
+            <select id="idea-polarity" onchange="renderIdeas()" class="px-3 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500">
+              <option value="ALL">Tất cả chiều hướng</option>
+              <option value="PRO">✅ Ưu điểm / Giải pháp</option>
+              <option value="CON">⚠️ Nhược điểm / Nguyên nhân</option>
+            </select>
+            <button id="btn-filter-starred" onclick="toggleStarFilter()" class="px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm font-semibold hover:bg-amber-100 dark:hover:bg-amber-950/50 transition whitespace-nowrap">
+              ★ Đã lưu (<span id="starred-count">0</span>)
+            </button>
+          </div>
+        </div>
+
+        <!-- Topic Pills -->
+        <div id="topic-pills" class="flex gap-2 overflow-x-auto pb-1 no-scrollbar"></div>
+      </div>
+
+      <!-- Ideas Grid -->
+      <div id="ideas-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- TAB 2: FLASHCARDS LẬT 3D & LUYỆN PHÁT ÂM / SPEAKING LAB    -->
+    <!-- ========================================================= -->
+    <section id="tab-flashcards" class="tab-panel hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
+        <div>
+          <h2 class="text-lg sm:text-xl font-extrabold">🗂️ Flashcards 3D & Luyện Phát âm Shadowing</h2>
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Chạm thẻ để lật • Bấm 🔊 để nghe giọng chuẩn • Bấm 🎙️ để kiểm tra phát âm</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <select id="fc-topic-select" onchange="initFlashcards()" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs sm:text-sm font-semibold">
+            <option value="ALL">Tất cả 7 chủ đề (62 thẻ)</option>
+            <option value="STARRED">★ Chỉ thẻ đã lưu ôn tập</option>
+            <option value="Education">Education (Giáo dục)</option>
+            <option value="Work & Career">Work & Career (Công việc)</option>
+            <option value="Technology">Technology (Công nghệ)</option>
+            <option value="Health & Food">Health & Food (Sức khỏe)</option>
+            <option value="Environment">Environment (Môi trường)</option>
+            <option value="Transport">Transport (Giao thông)</option>
+            <option value="Social & Lifestyle">Social & Lifestyle (Xã hội)</option>
+          </select>
+          <button onclick="shuffleFlashcards()" class="px-3 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-300 text-xs sm:text-sm font-bold hover:bg-indigo-100 transition">
+            🔀 Trộn thẻ
+          </button>
+        </div>
+      </div>
+
+      <!-- 3D Card Container -->
+      <div class="max-w-2xl mx-auto space-y-4">
+        <div class="flex items-center justify-between text-xs font-bold text-slate-500 dark:text-slate-400 px-1">
+          <span>Thẻ <span id="fc-index" class="text-indigo-600 dark:text-indigo-400">1</span> / <span id="fc-total">62</span></span>
+          <span id="fc-topic-badge" class="px-2.5 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300">Education</span>
+        </div>
+
+        <div onclick="flipCard()" class="perspective-1000 cursor-pointer select-none h-72 sm:h-80">
+          <div id="fc-inner" class="relative w-full h-full transition-transform duration-500 transform-style-3d">
+            <!-- Front -->
+            <div class="absolute inset-0 backface-hidden rounded-3xl bg-white dark:bg-slate-900 border-2 border-indigo-100 dark:border-slate-800 shadow-xl p-6 sm:p-8 flex flex-col justify-between">
+              <div class="flex items-center justify-between">
+                <span id="fc-polarity-tag" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-700">✅ Ưu điểm</span>
+                <button onclick="event.stopPropagation(); speakCurrentCard()" class="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow hover:bg-indigo-700 transition" title="Nghe phát âm">
+                  🔊
+                </button>
+              </div>
+              <div class="text-center my-auto px-2">
+                <p class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-2">Luận điểm chính (Main Point)</p>
+                <h3 id="fc-front-en" class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white leading-snug">Broaden knowledge and improve skills</h3>
+                <p id="fc-front-vi" class="text-sm sm:text-base text-indigo-600 dark:text-indigo-400 font-semibold mt-2">Mở rộng kiến thức và cải thiện kỹ năng</p>
+              </div>
+              <p class="text-center text-xs text-slate-400">👆 Chạm vào thẻ để xem chuỗi Nguyên nhân → Kết quả</p>
+            </div>
+
+            <!-- Back -->
+            <div class="absolute inset-0 backface-hidden rotate-y-180 rounded-3xl bg-gradient-to-br from-slate-900 to-indigo-950 text-white border-2 border-indigo-500/40 shadow-xl p-6 sm:p-8 flex flex-col justify-between">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-indigo-300">Chuỗi triển khai R-E-F</span>
+                <button onclick="event.stopPropagation(); speakFullChain()" class="px-3 py-1.5 rounded-full bg-white/15 hover:bg-white/25 text-xs font-bold flex items-center gap-1 transition">
+                  🔊 Đọc cả chuỗi
+                </button>
+              </div>
+              <div class="space-y-3 my-auto text-left">
+                <div class="p-3 rounded-xl bg-white/10 border border-white/10">
+                  <span class="text-[11px] font-bold uppercase text-amber-300">2. Nguyên nhân (Reason):</span>
+                  <p id="fc-back-reason" class="text-sm sm:text-base font-semibold mt-0.5">Keep up with the latest information and useful facts</p>
+                </div>
+                <div class="p-3 rounded-xl bg-white/10 border border-white/10">
+                  <span class="text-[11px] font-bold uppercase text-emerald-300">3. Kết quả (Effect):</span>
+                  <p id="fc-back-result" class="text-sm sm:text-base font-semibold mt-0.5">Enhance academic performance and achieve higher test scores</p>
+                </div>
+              </div>
+              <p class="text-center text-xs text-indigo-300">👆 Chạm để quay lại mặt trước</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation & Mastery Controls -->
+        <div class="grid grid-cols-4 gap-2">
+          <button onclick="prevCard()" class="py-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 font-bold text-sm hover:bg-slate-100 dark:hover:bg-slate-800 transition">⬅️ Trước</button>
+          <button onclick="toggleMasterCurrentCard()" id="btn-fc-master" class="col-span-2 py-3 rounded-xl bg-emerald-600 text-white font-bold text-sm shadow hover:bg-emerald-700 transition">✅ Đánh dấu Đã thuộc</button>
+          <button onclick="nextCard()" class="py-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 font-bold text-sm hover:bg-slate-100 dark:hover:bg-slate-800 transition">Sau ➡️</button>
+        </div>
+
+        <!-- NÂNG CẤP #4: SPEAKING SHADOWING & VOICE CHECK -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+          <div class="flex items-center justify-between gap-2">
+            <div>
+              <h4 class="font-extrabold text-sm sm:text-base flex items-center gap-1.5">🎙️ Luyện Phát âm & Shadowing (Voice Check)</h4>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Đọc to cụm tiếng Anh trên thẻ để AI chấm độ khớp từ vựng</p>
+            </div>
+            <button id="btn-voice-record" onclick="startSpeechCheck()" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs sm:text-sm shadow transition flex items-center gap-1.5 shrink-0">
+              <span>🎤</span> <span id="voice-btn-label">Bấm để nói</span>
+            </button>
+          </div>
+          <div id="speech-result-box" class="hidden p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs sm:text-sm space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-slate-500">Bạn đã đọc:</span>
+              <span id="speech-score-badge" class="px-2 py-0.5 rounded-full font-extrabold text-xs bg-emerald-100 text-emerald-700">Khớp 100%</span>
+            </div>
+            <p id="speech-transcript" class="font-semibold text-slate-900 dark:text-white italic">"..."</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SPEAKING PART 1, 2, 3 PRACTICE BANK (TỪ GIÁO TRÌNH B1-104) -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h3 class="font-extrabold text-base sm:text-lg">🗣️ Ngân hàng Luyện Nói VSTEP (Speaking Part 1 - 2 - 3)</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Bộ câu hỏi & dàn ý mẫu từ giáo trình B1-104 (Social Interaction, Solution Discussion, Topic Development)</p>
+          </div>
+          <select id="speaking-part-filter" onchange="renderSpeakingBank()" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs sm:text-sm font-bold">
+            <option value="ALL">Tất cả 3 Phần (Part 1, 2, 3)</option>
+            <option value="Part 1">Part 1: Social Interaction (8 câu)</option>
+            <option value="Part 2">Part 2: Solution Discussion (Tình huống)</option>
+            <option value="Part 3">Part 3: Topic Development (Mobile Phones)</option>
+          </select>
+        </div>
+        <div id="speaking-list" class="grid grid-cols-1 md:grid-cols-2 gap-3.5"></div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- TAB 3: TRẮC NGHIỆM, NHẬN DIỆN ĐỀ & SỔ TAY LỖI SAI           -->
+    <!-- ========================================================= -->
+    <section id="tab-quiz" class="tab-panel hidden space-y-5">
+      <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-lg sm:text-xl font-extrabold">🎯 Luyện Phản xạ Đề thi & Sổ tay Lỗi sai</h2>
+            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">42 câu hỏi thực chiến B1-104 • Tự động lưu câu sai để ôn tập chuyên sâu</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="setQuizMode('essay_type')" data-qmode="essay_type" class="qmode-btn px-3 py-2 rounded-xl text-xs font-bold transition">1. Nhận diện dạng Luận</button>
+            <button onclick="setQuizMode('email_pronoun')" data-qmode="email_pronoun" class="qmode-btn px-3 py-2 rounded-xl text-xs font-bold transition">2. Đổi chủ ngữ Email</button>
+            <button onclick="setQuizMode('reading_idea')" data-qmode="reading_idea" class="qmode-btn px-3 py-2 rounded-xl text-xs font-bold transition">3. Đọc hiểu & Idea R-E-F</button>
+            <button onclick="setQuizMode('weak_spots')" data-qmode="weak_spots" class="qmode-btn px-3 py-2 rounded-xl text-xs font-bold bg-rose-50 text-rose-700 dark:bg-rose-950 dark:text-rose-300 border border-rose-200 dark:border-rose-800 transition">
+              ⚠️ Ôn câu sai (<span id="quiz-weak-count">0</span>)
+            </button>
+          </div>
+        </div>
+
+        <!-- Score Bar -->
+        <div class="flex items-center justify-between px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs sm:text-sm font-bold">
+          <span>Câu hỏi: <span id="q-current" class="text-indigo-600 dark:text-indigo-400">1</span>/<span id="q-total">15</span></span>
+          <span>Điểm phiên này: <span id="q-score" class="text-emerald-600 dark:text-emerald-400">0</span></span>
+          <button onclick="resetQuizSession()" class="text-indigo-600 dark:text-indigo-400 hover:underline">🔄 Làm lại từ đầu</button>
+        </div>
+
+        <!-- Question Card -->
+        <div id="quiz-card" class="p-4 sm:p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-4">
+          <div class="flex items-center justify-between gap-2">
+            <span id="q-tag" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">Nhận diện Dạng bài</span>
+            <button onclick="speakQuizPrompt()" class="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline">🔊 Đọc đề bài</button>
+          </div>
+          <p id="q-prompt" class="text-sm sm:text-base font-bold leading-relaxed text-slate-900 dark:text-white"></p>
+          <div id="q-options" class="grid grid-cols-1 gap-2.5"></div>
+          <div id="q-feedback" class="hidden p-4 rounded-xl text-xs sm:text-sm font-medium leading-relaxed"></div>
+          <div class="flex justify-end">
+            <button id="btn-next-q" onclick="nextQuizQuestion()" class="hidden px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-sm hover:bg-indigo-700 transition">
+              Câu tiếp theo ➡️
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- TAB 4: STUDIO VIẾT BÀI, DÀN Ý R-E-F & THI THỬ VSTEP        -->
+    <!-- ========================================================= -->
+    <section id="tab-studio" class="tab-panel hidden space-y-5">
+      <!-- Top Bar: Exam Simulation Mode + Word Counter -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+        <div class="flex flex-wrap items-center gap-2">
+          <button onclick="toggleExamMode()" id="btn-exam-mode" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs sm:text-sm shadow transition flex items-center gap-1.5">
+            <span>⏱️</span> <span id="exam-mode-label">Bật Chế độ Phòng thi VSTEP</span>
+          </button>
+          <div id="exam-timer-box" class="hidden items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900 text-white font-mono text-sm font-extrabold">
+            <span id="exam-countdown">40:00</span>
+            <button onclick="setExamDuration(20)" class="px-2 py-0.5 rounded bg-white/15 text-[11px] hover:bg-white/25">Task 1 (20p)</button>
+            <button onclick="setExamDuration(40)" class="px-2 py-0.5 rounded bg-white/15 text-[11px] hover:bg-white/25">Task 2 (40p)</button>
+            <button onclick="toggleTimerPause()" id="btn-pause-timer" class="px-2 py-0.5 rounded bg-indigo-500 text-[11px]">⏸️</button>
+          </div>
+        </div>
+
+        <!-- Word Count Meter -->
+        <div class="flex items-center gap-3">
+          <div class="text-right">
+            <div class="text-xs font-bold text-slate-500 dark:text-slate-400">
+              Số từ: <span id="word-count" class="text-base font-extrabold text-indigo-600 dark:text-indigo-400">0</span> / <span id="word-target">250</span> từ
+            </div>
+            <div class="w-36 sm:w-44 h-2 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden mt-1">
+              <div id="word-progress" class="h-full bg-indigo-600 transition-all duration-300" style="width: 0%"></div>
+            </div>
+          </div>
+          <span id="word-status-badge" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Chưa đạt</span>
+        </div>
+      </div>
+
+      <!-- NÂNG CẤP #3: CÔNG CỤ LẬP DÀN Ý TỰ ĐỘNG R-E-F (INTERACTIVE OUTLINE BUILDER) -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-5 border border-indigo-200 dark:border-indigo-900/60 shadow-sm space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="font-extrabold text-base sm:text-lg text-indigo-700 dark:text-indigo-400">⚡ Công cụ Lập Dàn ý Tự động (Mô hình BETMA R-E-F)</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Chọn dạng bài, nhập chủ đề và chọn 4 chuỗi Idea → Hệ thống tự động lắp ráp thành bài luận hoàn chỉnh</p>
+          </div>
+          <button onclick="toggleBuilderCollapse()" id="btn-toggle-builder" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-300">Thu gọn ▲</button>
+        </div>
+
+        <div id="ref-builder-body" class="space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-xs font-bold mb-1">1. Dạng đề bài (Essay Type)</label>
+              <select id="builder-type" class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs sm:text-sm font-semibold">
+                <option value="adv_dis">1. Advantages - Disadvantages</option>
+                <option value="agree_dis">2. Agree - Disagree</option>
+                <option value="discuss_both">3. Discussion Both Views</option>
+                <option value="cause_sol">4. Cause - Effect - Solution</option>
+                <option value="one_view">5. Discuss One View (Benefits)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold mb-1">2. Chủ đề (Topic Keyword tiếng Anh)</label>
+              <input id="builder-topic" type="text" value="working from home" placeholder="VD: using phones in schools, air pollution..." class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs sm:text-sm font-semibold" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold mb-1">3. Quan điểm chọn (nếu Agree / Both Views)</label>
+              <input id="builder-opinion" type="text" value="working from home brings more long-term benefits" placeholder="VD: smoking in public places should be banned" class="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs sm:text-sm font-semibold" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div class="p-3 rounded-xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200/70 dark:border-rose-900/50 space-y-2">
+              <p class="text-xs font-extrabold text-rose-700 dark:text-rose-300">BODY 1 (Mặt trái / Nguyên nhân / Quan điểm 1)</p>
+              <select id="b1-idea1" class="idea-selector w-full px-2.5 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs"></select>
+              <select id="b1-idea2" class="idea-selector w-full px-2.5 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs"></select>
+            </div>
+            <div class="p-3 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200/70 dark:border-emerald-900/50 space-y-2">
+              <p class="text-xs font-extrabold text-emerald-700 dark:text-emerald-300">BODY 2 (Lợi ích / Giải pháp / Quan điểm ủng hộ)</p>
+              <select id="b2-idea1" class="idea-selector w-full px-2.5 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs"></select>
+              <select id="b2-idea2" class="idea-selector w-full px-2.5 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs"></select>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span class="text-xs text-slate-500">Mẹo: Bạn cũng có thể bấm <strong>"+ Đưa vào Dàn ý"</strong> ở Tab 1 để điền nhanh vào 4 ô trên.</span>
+            <button onclick="generateEssayFromBuilder()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-extrabold text-xs sm:text-sm shadow hover:opacity-95 transition">
+              ✨ Lắp ráp tự động vào Khung viết bài
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Studio Workspace: Template Selector + Editor -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <!-- Left: 8 BETMA Templates -->
+        <div id="template-sidebar" class="lg:col-span-4 bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-200 dark:border-slate-800 space-y-3">
+          <h4 class="font-extrabold text-sm">📋 8 Khung Template Chuẩn BETMA</h4>
+          <div id="template-buttons" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2"></div>
+          <div class="p-3 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-xs text-indigo-800 dark:text-indigo-200 space-y-1">
+            <p class="font-bold">💡 Từ nối ăn điểm B1-B2:</p>
+            <p>• Mở ý: <em>One significant reason is that / One key reason is that</em></p>
+            <p>• Giải thích: <em>This is mainly because / This is due to the fact that</em></p>
+            <p>• Hệ quả: <em>Consequently / As a result / Therefore</em></p>
+          </div>
+        </div>
+
+        <!-- Right: Writing Editor -->
+        <div id="editor-container" class="lg:col-span-8 bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-200 dark:border-slate-800 flex flex-col gap-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span id="active-template-title" class="text-xs sm:text-sm font-extrabold text-indigo-600 dark:text-indigo-400">Đang chọn: Template 1 - Advantages & Disadvantages</span>
+            <div class="flex flex-wrap gap-1.5">
+              <button onclick="copyEditorText()" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-xs font-bold transition">📋 Sao chép</button>
+              <button onclick="downloadEssayTxt()" class="px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 text-xs font-bold transition">⬇️ Tải .TXT</button>
+              <button onclick="clearEditor()" class="px-3 py-1.5 rounded-lg bg-rose-50 dark:bg-rose-950 text-rose-600 dark:text-rose-300 text-xs font-bold transition">🗑️ Xóa trắng</button>
+            </div>
+          </div>
+
+          <textarea id="writing-editor" oninput="updateWordCount()" rows="15" placeholder="Chọn một Template bên trái hoặc bấm 'Lắp ráp tự động' ở trên để bắt đầu viết bài..." class="w-full p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 focus:border-indigo-500 focus:outline-none text-sm sm:text-base leading-relaxed font-normal"></textarea>
+
+          <!-- Instant Quality Check -->
+          <div id="essay-diagnostics" class="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/60 px-3.5 py-2.5 rounded-xl">
+            <span id="connector-check">🔍 Từ nối học thuật: 0 cụm</span>
+            <span>💾 Tự động lưu nháp trên trình duyệt</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- TAB 5: KHO BÀI MẪU B1-104 & HƯỚNG DẪN ĐƯA LÊN GITHUB      -->
+    <!-- ========================================================= -->
+    <section id="tab-samples" class="tab-panel hidden space-y-6">
+      <!-- GitHub Pages Quick Deploy Guide (PC & Mobile) -->
+      <div class="rounded-2xl bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white p-5 sm:p-6 border border-indigo-500/30 shadow-xl space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <span class="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold">MIỄN PHÍ 100% • DÙNG ĐƯỢC CẢ ĐIỆN THOẠI & MÁY TÍNH</span>
+            <h2 class="text-xl sm:text-2xl font-extrabold mt-2">🚀 Đưa Web này lên GitHub Pages trong 2 phút</h2>
+            <p class="text-slate-300 text-xs sm:text-sm mt-1">Không cần cài phần mềm lập trình. Làm trực tiếp trên trình duyệt điện thoại hoặc máy tính:</p>
+          </div>
+          <button onclick="downloadSelfHtml()" class="px-4 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold text-xs sm:text-sm shadow-lg transition shrink-0">
+            ⬇️ Tải file index.html ngay
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs sm:text-sm">
+          <div class="p-4 rounded-xl bg-white/10 border border-white/10 space-y-1.5">
+            <div class="font-extrabold text-amber-300">Bước 1: Tạo Repository trên GitHub</div>
+            <p class="text-slate-200 leading-relaxed">Vào <strong>github.com</strong> → Bấm dấu <strong>+</strong> (góc trên phải) → chọn <strong>New repository</strong> → Đặt tên <code>b1-104-vstep</code> → Chọn <strong>Public</strong> → Bấm <strong>Create repository</strong>.</p>
+          </div>
+          <div class="p-4 rounded-xl bg-white/10 border border-white/10 space-y-1.5">
+            <div class="font-extrabold text-sky-300">Bước 2: Tải file index.html lên</div>
+            <p class="text-slate-200 leading-relaxed">Trong trang Repo vừa tạo, bấm <strong>uploading an existing file</strong> → Chọn file <code>index.html</code> bạn vừa tải về → Bấm nút xanh <strong>Commit changes</strong>.</p>
+          </div>
+          <div class="p-4 rounded-xl bg-white/10 border border-white/10 space-y-1.5">
+            <div class="font-extrabold text-emerald-300">Bước 3: Bật link Web & Cài vào Điện thoại</div>
+            <p class="text-slate-200 leading-relaxed">Vào tab <strong>Settings → Pages</strong> → Mục Branch chọn <strong>main</strong> → <strong>Save</strong>. Sau 30 giây bạn có link web chạy mọi nơi! Trên điện thoại bấm <strong>Chia sẻ → Thêm vào MH chính</strong>.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Model Essays & Emails Library -->
+      <div class="space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h3 class="text-lg sm:text-xl font-extrabold">📖 8 Bài Mẫu Chuẩn B1-104 (Essay & Email)</h3>
+            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Bấm "Đưa vào Studio" để tập chỉnh sửa hoặc bấm 🔊 để luyện nghe ngấm cấu trúc</p>
+          </div>
+          <select id="sample-filter" onchange="renderSamples()" class="px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm font-bold">
+            <option value="ALL">Tất cả 8 bài mẫu</option>
+            <option value="Essay">Writing Task 2: Essay (5 bài)</option>
+            <option value="Email">Writing Task 1: Email (3 bài)</option>
+          </select>
+        </div>
+
+        <div id="samples-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MOBILE BOTTOM NAVIGATION BAR -->
+  <nav class="md:hidden fixed bottom-0 inset-x-0 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 safe-bottom">
+    <div class="grid grid-cols-5 h-16">
+      <button onclick="switchTab('ideas')" data-tab="ideas" class="mob-nav-btn flex flex-col items-center justify-center gap-0.5 text-[10px] font-bold">
+        <span class="text-lg">📚</span>
+        <span>Idea (62)</span>
+      </button>
+      <button onclick="switchTab('flashcards')" data-tab="flashcards" class="mob-nav-btn flex flex-col items-center justify-center gap-0.5 text-[10px] font-bold">
+        <span class="text-lg">🗂️</span>
+        <span>Thẻ & Nói</span>
+      </button>
+      <button onclick="switchTab('quiz')" data-tab="quiz" class="mob-nav-btn relative flex flex-col items-center justify-center gap-0.5 text-[10px] font-bold">
+        <span class="text-lg">🎯</span>
+        <span>Trắc nghiệm</span>
+        <span id="mobile-weak-badge" class="hidden absolute top-1.5 right-3 px-1.5 py-0.2 text-[9px] font-extrabold rounded-full bg-rose-500 text-white">0</span>
+      </button>
+      <button onclick="switchTab('studio')" data-tab="studio" class="mob-nav-btn flex flex-col items-center justify-center gap-0.5 text-[10px] font-bold">
+        <span class="text-lg">✍️</span>
+        <span>Studio</span>
+      </button>
+      <button onclick="switchTab('samples')" data-tab="samples" class="mob-nav-btn flex flex-col items-center justify-center gap-0.5 text-[10px] font-bold">
+        <span class="text-lg">🚀</span>
+        <span>Mẫu & Web</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed bottom-20 md:bottom-6 right-4 z-50 hidden px-4 py-3 rounded-xl bg-slate-900 dark:bg-indigo-600 text-white text-xs sm:text-sm font-bold shadow-xl transition-all"></div>
+
+  <script>
+    // =========================================================================
+    // 1. DỮ LIỆU CHUẨN B1-104 BETMA VSTEP (62 CHUỖI IDEA R-E-F + TỪ VỰNG)
+    // =========================================================================
+    const IDEAS_DATA = [
+      // EDUCATION (10)
+      { id: 1, topic: "Education", polarity: "PRO", point: "Broaden knowledge and improve skills", vi: "Mở rộng kiến thức và cải thiện kỹ năng", reason: "keep up with the latest information and useful facts in various subjects", result: "enhance academic performance and achieve higher test scores" },
+      { id: 2, topic: "Education", polarity: "PRO", point: "Provide better job opportunities", vi: "Mang lại cơ hội việc làm tốt hơn", reason: "enhance professional competence and practical skills", result: "secure a well-paid job and build a stable career" },
+      { id: 3, topic: "Education", polarity: "PRO", point: "Make learning more fun and interesting", vi: "Làm cho việc học trở nên vui vẻ và thú vị hơn", reason: "engage in interactive learning activities and multimedia lessons", result: "maintain a high level of motivation" },
+      { id: 4, topic: "Education", polarity: "PRO", point: "Boost the development of the economy", vi: "Thúc đẩy sự phát triển của nền kinh tế", reason: "create more business opportunities and a skilled workforce", result: "enjoy better employment prospects and raise living standards" },
+      { id: 5, topic: "Education", polarity: "PRO", point: "Increase self-confidence", vi: "Tăng cường sự tự tin vào bản thân", reason: "acquire new knowledge and problem-solving abilities", result: "communicate more effectively and express ideas clearly" },
+      { id: 6, topic: "Education", polarity: "CON", point: "Increase financial pressure on students", vi: "Gia tăng áp lực tài chính lên học sinh, sinh viên", reason: "pay high tuition fees and purchase expensive textbooks", result: "face heavy financial burden, especially for those with limited incomes" },
+      { id: 7, topic: "Education", polarity: "CON", point: "Make students feel confused", vi: "Khiến học sinh cảm thấy bối rối, hoang mang", reason: "be exposed to a vast amount of unstructured information", result: "struggle to identify reliable information" },
+      { id: 8, topic: "Education", polarity: "CON", point: "Be time-consuming", vi: "Tốn nhiều thời gian và công sức", reason: "require a lot of time and effort to complete assignments", result: "have less time for family bonding and hobbies" },
+      { id: 9, topic: "Education", polarity: "CON", point: "Be monotonous and boring", vi: "Đơn điệu và nhàm chán", reason: "perform the same tasks repeatedly such as memorizing definitions", result: "maintain a low level of motivation in class" },
+      { id: 10, topic: "Education", polarity: "CON", point: "Be stressful for learners", vi: "Gây căng thẳng cho người học", reason: "face heavy workloads and difficult examinations", result: "have a negative impact on mental well-being" },
+
+      // WORK & CAREER (8)
+      { id: 11, topic: "Work & Career", polarity: "PRO", point: "Provide greater convenience", vi: "Mang lại sự tiện lợi lớn hơn", reason: "complete tasks more quickly and efficiently", result: "save time and focus on other important activities" },
+      { id: 12, topic: "Work & Career", polarity: "PRO", point: "Enhance communication skills", vi: "Nâng cao kỹ năng giao tiếp", reason: "have more opportunities to interact with colleagues and customers", result: "build stronger relationships and communicate more effectively" },
+      { id: 13, topic: "Work & Career", polarity: "PRO", point: "Provide greater flexibility", vi: "Mang lại sự linh hoạt cao hơn", reason: "arrange working hours and environments independently", result: "balance their work and personal lives effectively" },
+      { id: 14, topic: "Work & Career", polarity: "PRO", point: "Boost creativity and innovation", vi: "Thúc đẩy sự sáng tạo và đổi mới", reason: "be encouraged to explore new ideas in dynamic environments", result: "develop innovative solutions to various problems" },
+      { id: 15, topic: "Work & Career", polarity: "CON", point: "Require a considerable amount of money", vi: "Đòi hỏi một khoản tiền đáng kể", reason: "pay for modern equipment, training courses, and travel expenses", result: "face financial pressure on daily budgets" },
+      { id: 16, topic: "Work & Career", polarity: "CON", point: "Reduce face-to-face interaction", vi: "Giảm sự tương tác trực tiếp", reason: "spend less time communicating directly with co-workers", result: "find it difficult to build strong workplace relationships" },
+      { id: 17, topic: "Work & Career", polarity: "CON", point: "Reduce work productivity", vi: "Làm giảm năng suất làm việc", reason: "have difficulty concentrating when adapting to new tasks", result: "decline their work performance significantly" },
+      { id: 18, topic: "Work & Career", polarity: "CON", point: "Cause frequent distractions", vi: "Gây xao nhãng, mất tập trung", reason: "be exposed to various sources of entertainment at home", result: "lose focus on important work activities" },
+
+      // TECHNOLOGY (10)
+      { id: 19, topic: "Technology", polarity: "PRO", point: "Provide unlimited sources of information", vi: "Cung cấp nguồn thông tin vô hạn", reason: "gain access to a vast amount of knowledge online", result: "keep up with the latest information effortlessly" },
+      { id: 20, topic: "Technology", polarity: "PRO", point: "Communicate easily with others", vi: "Giao tiếp dễ dàng với mọi người", reason: "interact with people instantly through online platforms like Zalo and Facebook", result: "enhance communication efficiency across long distances" },
+      { id: 21, topic: "Technology", polarity: "PRO", point: "Upgrade technological skills", vi: "Nâng cao kỹ năng công nghệ", reason: "be exposed to modern technologies and digital tools", result: "improve digital competence for future careers" },
+      { id: 22, topic: "Technology", polarity: "PRO", point: "Make activities more fun and interesting", vi: "Giúp các hoạt động thú vị và sinh động hơn", reason: "incorporate interactive tools and multimedia features", result: "maintain a higher level of engagement" },
+      { id: 23, topic: "Technology", polarity: "PRO", point: "Offer greater convenience in daily life", vi: "Mang lại sự tiện lợi vượt trội", reason: "access services and information anytime and anywhere", result: "save a considerable amount of time and effort" },
+      { id: 24, topic: "Technology", polarity: "CON", point: "Negatively affect academic results", vi: "Ảnh hưởng xấu đến kết quả học tập", reason: "spend excessive time on entertainment instead of studying", result: "reduce learning effectiveness and get poor grades" },
+      { id: 25, topic: "Technology", polarity: "CON", point: "Weaken real-life interpersonal skills", vi: "Làm suy yếu kỹ năng giao tiếp ngoài đời thực", reason: "rely heavily on online communication instead of meeting in person", result: "reduce face-to-face interaction with family and friends" },
+      { id: 26, topic: "Technology", polarity: "CON", point: "Make users get distracted easily", vi: "Khiến người dùng dễ bị phân tâm", reason: "spend excessive amounts of time scrolling on social media", result: "lose focus on their study and work activities" },
+      { id: 27, topic: "Technology", polarity: "CON", point: "Require a large amount of money for devices", vi: "Tốn nhiều tiền mua thiết bị và dịch vụ mạng", reason: "purchase modern devices, software, and Internet services", result: "place a financial burden on individuals" },
+      { id: 28, topic: "Technology", polarity: "CON", point: "Depend heavily on the Internet", vi: "Phụ thuộc quá mức vào Internet", reason: "rely on online platforms instead of thinking independently", result: "become less self-reliant in solving problems" },
+
+      // HEALTH & FOOD (8)
+      { id: 29, topic: "Health & Food", polarity: "PRO", point: "Provide a greater variety of products", vi: "Cung cấp sự đa dạng sản phẩm hơn", reason: "access products from different brands and restaurants", result: "find items that meet personal needs and budgets" },
+      { id: 30, topic: "Health & Food", polarity: "PRO", point: "Create jobs and boost the food economy", vi: "Tạo việc làm và thúc đẩy kinh tế dịch vụ", reason: "create more job opportunities for farmers, chefs, and delivery drivers", result: "help workers earn a stable income" },
+      { id: 31, topic: "Health & Food", polarity: "PRO", point: "Provide more nutrition and vitamins", vi: "Cung cấp nhiều dinh dưỡng và vitamin hơn", reason: "contain essential nutrients such as vitamins and minerals", result: "boost the immune system and prevent chronic diseases" },
+      { id: 32, topic: "Health & Food", polarity: "PRO", point: "Offer greater convenience for busy people", vi: "Mang lại sự tiện lợi cho người bận rộn", reason: "access food services and nutrition info anytime and anywhere", result: "save a considerable amount of time on cooking" },
+      { id: 33, topic: "Health & Food", polarity: "CON", point: "Negatively impact human health", vi: "Tác động tiêu cực đến sức khỏe con người", reason: "contain harmful substances, excessive fat, and sugar", result: "increase a higher level of diseases such as obesity and heart problems" },
+      { id: 34, topic: "Health & Food", polarity: "CON", point: "Cause loss of support for local farmers", vi: "Làm giảm sự ủng hộ đối với nông dân địa phương", reason: "prefer imported or foreign processed products", result: "cause local producers to lose customers and profits" },
+      { id: 35, topic: "Health & Food", polarity: "CON", point: "Place a financial burden on families", vi: "Tạo gánh nặng tài chính cho gia đình", reason: "allocate a considerable budget to purchase organic food or delivery fees", result: "reduce disposable income for other needs" },
+      { id: 36, topic: "Health & Food", polarity: "CON", point: "Lead to a sedentary lifestyle and fatigue", vi: "Dẫn đến lối sống ít vận động và mệt mỏi", reason: "lack regular exercise and adequate sleep", result: "lower energy levels and harm mental clarity" },
+
+      // ENVIRONMENT (10)
+      { id: 37, topic: "Environment", polarity: "CON", point: "Be caused by various human activities", vi: "Gây ra bởi nhiều hoạt động của con người", reason: "factories and vehicles release harmful pollutants and toxic waste", result: "increase the risk of species extinction and contaminate nature" },
+      { id: 38, topic: "Environment", polarity: "CON", point: "Result from rapid population growth", vi: "Bắt nguồn từ sự gia tăng dân số nhanh chóng", reason: "generate a greater amount of waste and demand for land and water", result: "have a negative impact on people's well-being and ecosystems" },
+      { id: 39, topic: "Environment", polarity: "CON", point: "Stem from a lack of public awareness", vi: "Xuất phát từ việc thiếu ý thức bảo vệ môi trường", reason: "fail to recognize the detrimental effects of their carbon footprint", result: "contribute significantly to global warming" },
+      { id: 40, topic: "Environment", polarity: "CON", point: "Have detrimental effects on human health", vi: "Gây tác hại nghiêm trọng cho sức khỏe con người", reason: "be exposed to toxic substances in polluted air and water", result: "increase respiratory diseases like asthma and lung cancer" },
+      { id: 41, topic: "Environment", polarity: "CON", point: "Disrupt daily human activities", vi: "Làm gián đoạn các hoạt động sinh hoạt hàng ngày", reason: "extreme weather events like floods and smog damage infrastructure", result: "negatively affect people's quality of life" },
+      { id: 42, topic: "Environment", polarity: "CON", point: "Lead to a decline in biodiversity", vi: "Dẫn đến suy giảm đa dạng sinh học", reason: "wild animals lose their natural habitats due to deforestation", result: "increase the risk of species extinction" },
+      { id: 43, topic: "Environment", polarity: "CON", point: "Contribute to global warming", vi: "Góp phần gây ra hiện tượng nóng lên toàn cầu", reason: "produce high levels of carbon emissions and greenhouse gases", result: "lead to rising sea levels and serious environmental consequences" },
+      { id: 44, topic: "Environment", polarity: "PRO", point: "The government should raise public awareness", vi: "Chính phủ nên nâng cao nhận thức cộng đồng", reason: "many citizens ignore the long-term consequences of pollution", result: "encourage people to save water, reduce plastic, and protect nature" },
+      { id: 45, topic: "Environment", polarity: "PRO", point: "The government should allocate more resources", vi: "Chính phủ nên phân bổ thêm nguồn lực tài chính", reason: "have sufficient financial resources and advanced technology", result: "build modern systems and facilities to treat waste and clean water" },
+      { id: 46, topic: "Environment", polarity: "PRO", point: "The government should enact and enforce strict laws", vi: "Chính phủ nên ban hành và thực thi luật nghiêm khắc", reason: "many companies fail to follow environmental regulations", result: "deter illegal dumping, logging, and wildlife poaching" },
+
+      // TRANSPORT (8)
+      { id: 47, topic: "Transport", polarity: "PRO", point: "Contribute to better public health outcomes", vi: "Cải thiện sức khỏe cộng đồng", reason: "discourage unhealthy sedentary habits and reduce toxic exhaust fumes", result: "raise a higher standard of living in cities" },
+      { id: 48, topic: "Transport", polarity: "PRO", point: "Provide greater convenience for commuters", vi: "Mang lại sự tiện lợi cho người đi lại", reason: "avoid parking hassles and traffic stress via buses or metro", result: "save a significant amount of time and effort" },
+      { id: 49, topic: "Transport", polarity: "PRO", point: "Promote environmental protection", vi: "Thúc đẩy bảo vệ môi trường", reason: "lower carbon emissions by reducing private vehicles on roads", result: "support sustainable and environmentally friendly development" },
+      { id: 50, topic: "Transport", polarity: "PRO", point: "Help commuters focus on higher-priority tasks", vi: "Giúp tập trung vào các công việc ưu tiên hơn", reason: "passengers can read, study, or answer emails while travelling", result: "improve daily productivity and reduce driving fatigue" },
+      { id: 51, topic: "Transport", polarity: "CON", point: "Be overcrowded and inflexible during rush hours", vi: "Quá tải và thiếu linh hoạt vào giờ cao điểm", reason: "follow fixed routes and timetables with limited vehicles", result: "waste waiting time and reduce passengers' comfort" },
+      { id: 52, topic: "Transport", polarity: "CON", point: "Encourage dangerous driving behaviors", vi: "Khuyến khích hành vi lái xe nguy hiểm", reason: "drivers speed up to beat traffic timers or lack road awareness", result: "increase the risk of serious collisions and accidents" },
+      { id: 53, topic: "Transport", polarity: "CON", point: "Increase carbon emissions from private vehicles", vi: "Tăng khí thải carbon từ xe cá nhân", reason: "heavy reliance on private motorbikes and cars daily", result: "worsen urban air pollution and hinder green development" },
+      { id: 54, topic: "Transport", polarity: "CON", point: "Cause severe traffic congestion", vi: "Gây ùn tắc giao thông nghiêm trọng", reason: "sudden braking at intersections and high vehicle density", result: "waste fuel and increase stress for commuters" },
+
+      // SOCIAL & LIFESTYLE (8)
+      { id: 55, topic: "Social & Lifestyle", polarity: "PRO", point: "Create a deep bond among family and friends", vi: "Tạo sự gắn kết sâu sắc giữa gia đình và bạn bè", reason: "spend quality time together sharing chores, meals, or trips", result: "strengthen relationships and mutual understanding" },
+      { id: 56, topic: "Social & Lifestyle", polarity: "PRO", point: "Help people relax and reduce stress", vi: "Giúp thư giãn và giảm căng thẳng", reason: "get away from daily pressure through sports, travel, or hobbies", result: "develop mental health and emotional well-being" },
+      { id: 57, topic: "Social & Lifestyle", polarity: "PRO", point: "Make memorable life experiences", vi: "Tạo nên những trải nghiệm đáng nhớ", reason: "participate in cultural exchange, festivals, and outdoor activities", result: "broaden horizons and appreciate diverse traditions" },
+      { id: 58, topic: "Social & Lifestyle", polarity: "PRO", point: "Create a cheerful and positive atmosphere", vi: "Tạo bầu không khí vui vẻ, tích cực", reason: "share stories and support one another in daily life", result: "help everyone feel happier and more motivated" },
+      { id: 59, topic: "Social & Lifestyle", polarity: "PRO", point: "Save a lot of money and reduce expenses", vi: "Tiết kiệm tiền bạc và giảm chi tiêu", reason: "read books in libraries, cook at home, or share resources", result: "use money for higher-priority goals" },
+      { id: 60, topic: "Social & Lifestyle", polarity: "PRO", point: "Express personal identity and build confidence", vi: "Thể hiện cá tính và xây dựng sự tự tin", reason: "choose suitable outfits and pursue personal passions", result: "make a good impression and communicate confidently" },
+      { id: 61, topic: "Social & Lifestyle", polarity: "CON", point: "Create a generation gap and family conflicts", vi: "Tạo khoảng cách thế hệ và mâu thuẫn gia đình", reason: "parents and children have different views and busy schedules", result: "cause misunderstandings and strain family relationships" },
+      { id: 62, topic: "Social & Lifestyle", polarity: "CON", point: "Encourage materialism and overspending", vi: "Khuyến khích lối sống vật chất và chi tiêu quá mức", reason: "spend a large amount of money chasing fast fashion and trends", result: "reduce disposable income and lower quality of life" }
+    ];
+
+    // =========================================================================
+    // 2. DỮ LIỆU SPEAKING PART 1, 2, 3 (TỪ GIÁO TRÌNH B1-104)
+    // =========================================================================
+    const SPEAKING_DATA = [
+      {
+        part: "Part 1",
+        title: "Social Interaction: Technology & Internet (8 câu hỏi tủ)",
+        questions: [
+          "1. Do you often use the Internet?",
+          "2. Do you enjoy learning a foreign language?",
+          "3. Do you want to study abroad?",
+          "4. Do you often use social media?",
+          "5. Do you use technology every day?",
+          "6. Do you spend a lot of time on your phone?",
+          "7. Do you enjoy studying English?",
+          "8. Do you think education is important?"
+        ],
+        tip: "Công thức trả lời nhanh Part 1: Yes, I do / Definitely yes, because it helps me [Idea R-E-F] + For example, I usually use it to..."
+      },
+      {
+        part: "Part 1",
+        title: "Social Interaction: Environment, Health & Lifestyle (8 câu hỏi tủ)",
+        questions: [
+          "1. Do you often use public transportation?",
+          "2. Do you enjoy planting trees?",
+          "3. Do you often eat vegetables?",
+          "4. Do you play any sports?",
+          "5. Do you like Tet holiday?",
+          "6. Do you like traveling to other countries?",
+          "7. Do you enjoy giving gifts to others?",
+          "8. Do you often take part in festivals?"
+        ],
+        tip: "Áp dụng ngay Idea đa năng: 'It is a great way to relax and reduce stress, get away from daily pressure, and create a deep bond with my family.'"
+      },
+      {
+        part: "Part 2",
+        title: "Situation: Attracting New Members for University Club",
+        questions: [
+          "Tình huống: Your university club is planning an event to attract new members. Three options: (1) An English talkshow, (2) A music show, (3) A sports competition."
+        ],
+        tip: "Chọn A MUSIC SHOW: Invite a famous artist like Sơn Tùng M-TP → has a huge fanbase & great voice → attracts many students → creates a cheerful atmosphere & enhances the club's reputation. (Reject Talkshow: quite boring/unsuitable; Reject Sports: time-consuming & requires too much effort)."
+      },
+      {
+        part: "Part 3",
+        title: "Topic Development: Benefits of Mobile Phones",
+        questions: [
+          "Mindmap 3 nhánh: (1) Access unlimited information, (2) Means of communication, (3) Modern functions/apps + Your own idea."
+        ],
+        tip: "Triển khai 3 ý: (1) Access unlimited sources of information anytime, anywhere; (2) Communicate easily via Zalo/Facebook; (3) Useful functions like mobile banking apps + Own idea: Offer many forms of entertainment to relax and reduce stress."
+      }
+    ];
+
+    // =========================================================================
+    // 3. DỮ LIỆU TRẮC NGHIỆM (42 CÂU: DẠNG LUẬN + EMAIL + READING/IDEA)
+    // =========================================================================
+    const QUIZ_DATA = {
+      essay_type: [
+        { id: "et1", q: "Đề bài hỏi: 'To what extent do you agree or disagree with the statement: Smoking in public places should be banned?' — Đây là dạng luận nào?", opts: ["Agree - Disagree", "Advantages - Disadvantages", "Cause - Effect - Solution", "Discuss One View"], ans: 0, exp: "Cụm từ khóa 'To what extent do you agree or disagree' xác định ngay dạng Agree - Disagree." },
+        { id: "et2", q: "Đề bài hỏi: 'Write an essay discussing the pros and cons of textbooks in education.' — Đây là dạng luận nào?", opts: ["Discussion Both Views", "Advantages - Disadvantages", "One View", "Cause - Solution"], ans: 1, exp: "'pros and cons' = 'advantages and disadvantages' (Ưu và nhược điểm)." },
+        { id: "et3", q: "Đề bài hỏi: 'What are the causes of electronic waste, and what are some solutions to deal with this problem?' — Đây là dạng luận nào?", opts: ["Agree - Disagree", "Advantages - Disadvantages", "Cause - Effect - Solution", "Discussion Both Views"], ans: 2, exp: "Có từ khóa 'causes' và 'solutions' → Dạng Cause - Effect - Solution." },
+        { id: "et4", q: "Đề bài hỏi: 'Some people believe removing countdown timers reduces speeding, while others argue it increases congestion. Discuss both views and give your own opinion.' — Đây là dạng gì?", opts: ["Discussion Both Views", "One View", "Advantages - Disadvantages", "Cause - Effect"], ans: 0, exp: "Có 2 luồng ý kiến trái chiều + 'Discuss both views and give your own opinion'." },
+        { id: "et5", q: "Đề bài hỏi: 'Write an essay to discuss the benefits of university students having part-time jobs.' — Đây là dạng gì?", opts: ["Advantages - Disadvantages", "Discuss One View", "Agree - Disagree", "Cause - Solution"], ans: 1, exp: "Đề chỉ yêu cầu bàn về 1 khía cạnh ('the benefits of...') → Dạng Discuss One View." },
+        { id: "et6", q: "Đề bài hỏi: 'What are the positive and negative impacts of technology on relationships?' — Đây là dạng gì?", opts: ["Advantages - Disadvantages", "Cause - Effect - Solution", "One View", "Agree - Disagree"], ans: 0, exp: "'positive and negative impacts' = Advantages - Disadvantages." },
+        { id: "et7", q: "Đề bài hỏi: 'Discuss the reasons for biodiversity loss and what can be done to maintain biodiversity.' — Đây là dạng gì?", opts: ["Discussion Both Views", "Cause - Effect - Solution", "Agree - Disagree", "One View"], ans: 1, exp: "'reasons' (= causes) và 'what can be done' (= solutions) → Cause - Effect - Solution." },
+        { id: "et8", q: "Đề bài hỏi: 'Write an essay discussing the importance of fashion in people's lives.' — Đây là dạng gì?", opts: ["Discuss One View", "Advantages - Disadvantages", "Discussion Both Views", "Cause - Solution"], ans: 0, exp: "'the importance of...' chỉ hỏi 1 chiều lợi ích/vai trò → Discuss One View." },
+        { id: "et9", q: "Đề bài hỏi: 'Discuss the effects resulting from air pollution and suggest some measures.' — Đây là dạng gì?", opts: ["Advantages - Disadvantages", "Cause - Effect - Solution", "Agree - Disagree", "One View"], ans: 1, exp: "'effects' và 'measures' (= solutions) → Cause - Effect - Solution." },
+        { id: "et10", q: "Đề bài hỏi: 'Write an essay discussing the negative effects of sharing personal lives on social media.' — Đây là dạng gì?", opts: ["Discuss One View (Negative)", "Discussion Both Views", "Agree - Disagree", "Cause - Solution"], ans: 0, exp: "Chỉ hỏi riêng về 'negative effects' (1 mặt) → Discuss One View." },
+        { id: "et11", q: "Đề bài hỏi: 'Discuss the advantages and drawbacks of advertising.' — Từ 'drawbacks' đồng nghĩa với từ nào?", opts: ["Benefits", "Disadvantages", "Solutions", "Causes"], ans: 1, exp: "Drawbacks = Disadvantages = Cons = Negative effects (Nhược điểm)." },
+        { id: "et12", q: "Trong Template 'Agree - Disagree' của BETMA, đoạn Body 2 nên viết về điều gì?", opts: ["Quan điểm mình KHÔNG đồng ý", "Quan điểm mình ỦNG HỘ (including myself, believe that...)", "Chỉ nêu giải pháp của chính phủ", "Tóm tắt lại đề bài"], ans: 1, exp: "Theo cấu trúc BETMA: Body 1 nhượng bộ quan điểm đối lập; Body 2 khẳng định mạnh mẽ quan điểm mình chọn ('including myself, believe that...')." }
+      ],
+      email_pronoun: [
+        { id: "ep1", q: "Trong đề Email, người gửi hỏi: 'Could you tell me the easiest way to get from the airport to YOUR house?' — Khi trả lời, 'YOUR house' đổi thành gì?", opts: ["your house", "my house", "our house", "his house"], ans: 1, exp: "Quy tắc vàng Email BETMA: Your → my (nhà của bạn → nhà của tôi)." },
+        { id: "ep2", q: "Đề Email hỏi: 'Will YOU be free to join me on this trip next month?' — Khi trả lời, 'YOU' đổi thành gì?", opts: ["I", "you", "we", "they"], ans: 0, exp: "You → I ('Yes, I would love to join you...')." },
+        { id: "ep3", q: "Đề Email hỏi: 'How is YOUR brother doing at university?' — Khi trả lời, 'YOUR brother' đổi thành gì?", opts: ["your brother", "my brother", "his brother", "their brother"], ans: 1, exp: "Your brother → my brother." },
+        { id: "ep4", q: "Khi viết Email Yêu cầu thông tin (YCTT - hỏi trung tâm tiếng Anh về học phí), mẫu câu nào lịch sự và chuẩn B1 nhất?", opts: ["Tell me the money now.", "Could you please provide me with the tuition fees for the summer course?", "I want money info.", "Do you give me price?"], ans: 1, exp: "Dùng 'Could you please provide me with...' hoặc 'I would be grateful if you could send me details about...'." },
+        { id: "ep5", q: "Trong Email CCTT (Cung cấp thông tin cho bạn bè), câu mở đầu thân thiện chuẩn BETMA là gì?", opts: ["Dear Sir or Madam, I am writing to complain...", "How are you? I hope you are well. Thank you for your email. I am writing this email to answer your questions.", "To whom it may concern,", "Yours faithfully,"], ans: 1, exp: "Email gửi bạn bè (Bill, John, Jimmy, Kate, Leo, Alex) dùng giọng thân mật + câu dẫn 'I am writing this email to answer your questions.'" },
+        { id: "ep6", q: "Đề Email viết: 'You recently stayed at a hotel... ask for information regarding a lost item in YOUR room.' — 'YOUR room' đổi thành gì?", opts: ["my room", "your room", "the manager's room", "their room"], ans: 0, exp: "Your room → my room ('I think I left my watch on the table in my room.')." },
+        { id: "ep7", q: "Câu kết nào phù hợp nhất cho Email trang trọng gửi Quản lý khách sạn / Trung tâm tiếng Anh?", opts: ["See ya soon! Love,", "I look forward to hearing from you soon. Best regards,", "Bye bye!", "Write me back fast."], ans: 1, exp: "'I look forward to hearing from you soon. Best regards,' dùng được an toàn cho cả Email trang trọng và bán trang trọng." },
+        { id: "ep8", q: "Đề bài hỏi: 'Should we go to the City Museum or the National Park?' — Cách trả lời mở rộng ý tốt nhất là gì?", opts: ["National Park.", "In my opinion, I think we should go to the National Park because it helps students relax, enjoy fresh air, and learn about nature.", "Yes, we should.", "I don't know."], ans: 1, exp: "Luôn chọn 1 phương án rõ ràng và giải thích lý do bằng chuỗi Idea đa năng." },
+        { id: "ep9", q: "Độ dài tối thiểu của Writing Task 1 (Email) trong kỳ thi VSTEP là bao nhiêu từ?", opts: ["80 từ", "100 từ", "120 từ", "250 từ"], ans: 2, exp: "Writing Task 1 (Email/Letter) yêu cầu tối thiểu 120 từ (nên viết khoảng 140–170 từ)." },
+        { id: "ep10", q: "Thời gian khuyến nghị cho Writing Task 1 (Email) trong phòng thi VSTEP là bao nhiêu phút?", opts: ["10 phút", "20 phút", "40 phút", "60 phút"], ans: 1, exp: "Tổng thời gian Writing VSTEP là 60 phút: 20 phút cho Task 1 (Email) và 40 phút cho Task 2 (Essay)." }
+      ],
+      reading_idea: [
+        { id: "ri1", q: "[Đọc hiểu BMI - B1-104] According to the passage, which BMI range is considered a healthy range for most adults?", opts: ["Between 25 and 29.9", "Between 18.5 and 24.9", "Above 30", "Under 18.5"], ans: 1, exp: "Đoạn 2: 'a number between 18.5 and 24.9 is considered a healthy range for most adults.'" },
+        { id: "ri2", q: "[Đọc hiểu BMI - B1-104] The word 'overlapping' in paragraph 4 is closest in meaning to _______.", opts: ["interconnected", "independent", "predictable", "temporary"], ans: 0, exp: "'many overlapping influences' = các yếu tố đan xen, kết nối lẫn nhau (interconnected)." },
+        { id: "ri3", q: "[Đọc hiểu BMI - B1-104] Why might a muscular athlete receive a misleadingly high BMI score?", opts: ["Because athletes weigh less than average", "Because BMI cannot tell the difference between muscle and fat", "Because athletes have high body fat", "Because BMI is only for children"], ans: 1, exp: "Đoạn 3: 'The formula cannot distinguish between muscle and fat'." },
+        { id: "ri4", q: "[Đọc hiểu BMI - B1-104] What do some clinics now do in addition to calculating BMI?", opts: ["Replace BMI with genetic testing", "Also measure waist circumference for a fuller picture", "Stop tracking adult measurements", "Rely only on self-reports"], ans: 1, exp: "Đoạn 5: 'combine BMI with other simple measurements, such as waist circumference, to build a more complete picture'." },
+        { id: "ri5", q: "[Chuỗi Idea R-E-F] Hoàn thành chuỗi: 'The government should _______ and _______ strict laws against illegal dumping.'", opts: ["enact / enforce", "relax / reduce", "ignore / waste", "spend / purchase"], ans: 0, exp: "Cụm collocation tủ của BETMA: 'enact and enforce strict laws against...' (ban hành và thực thi luật nghiêm khắc chống lại...)." },
+        { id: "ri6", q: "[Chuỗi Idea R-E-F] Hoàn thành chuỗi: 'Relying heavily on online communication can _______ interpersonal skills.'", opts: ["boost", "weaken", "enhance", "broaden"], ans: 1, exp: "Phụ thuộc giao tiếp online → làm suy yếu (weaken) kỹ năng giao tiếp ứng xử ngoài đời thực." },
+        { id: "ri7", q: "[Chuỗi Idea R-E-F] Hoàn thành chuỗi: 'Students have to pay high tuition fees, which places a heavy _______ on low-income families.'", opts: ["financial burden", "cheerful atmosphere", "digital competence", "green development"], ans: 0, exp: "'place a heavy financial burden on...' = đặt gánh nặng tài chính lên..." },
+        { id: "ri8", q: "[Chuỗi Idea R-E-F] Cụm từ nào dùng để nối từ Nguyên nhân sang Kết quả trong Template BETMA?", opts: ["This is mainly because", "Consequently, / As a result,", "This can be attributed to", "For example,"], ans: 1, exp: "'Consequently,' và 'As a result,' dẫn ra hệ quả/kết quả (Effect)." },
+        { id: "ri9", q: "[Chuỗi Idea R-E-F] Hoàn thành chuỗi Environment: 'People fail to recognize the detrimental effects of their _______.'", opts: ["carbon footprint", "well-paid job", "interactive tool", "public transport"], ans: 0, exp: "Cụm tủ chủ đề Môi trường: 'recognize the detrimental effects of their carbon footprint'." },
+        { id: "ri10", q: "[Chuỗi Idea R-E-F] Hoàn thành chuỗi Education: 'Continuous learning helps workers enhance their _______ and secure a well-paid job.'", opts: ["professional competence", "sedentary lifestyle", "air pollution", "traffic congestion"], ans: 0, exp: "'enhance professional competence' = nâng cao năng lực chuyên môn." }
+      ]
+    };
+
+    // =========================================================================
+    // 4. 8 KHUNG TEMPLATE LUẬN & EMAIL CHUẨN BETMA VSTEP
+    // =========================================================================
+    const TEMPLATES_DATA = [
+      {
+        id: "t1",
+        name: "1. Essay: Advantages - Disadvantages",
+        targetWords: 250,
+        content: `In recent years, [TOPIC] has become an increasingly controversial issue. Some people argue that this phenomenon brings many benefits, while others believe that it has some drawbacks. In this essay, I will discuss both perspectives.
+
+On the one hand, there are several reasons why some people support the view that [TOPIC] is detrimental. One significant reason is that [MAIN IDEA 1 - CON]. This is mainly because [REASON 1]. Consequently, this may result in [RESULT 1]. For example, [EXAMPLE 1]. In addition, supporters of this view argue that it can bring more drawbacks such as [MAIN IDEA 2 - CON].
+
+On the other hand, there are also compelling reasons why others believe that [TOPIC] is highly beneficial. One key reason is that [MAIN IDEA 1 - PRO]. This is due to the fact that [REASON 1]. As a result, [RESULT 1]. For instance, [EXAMPLE 1]. Furthermore, another important factor is that [MAIN IDEA 2 - PRO]. This can be attributed to [REASON 2]. Therefore, [RESULT 2].
+
+In conclusion, although both viewpoints have their own merits, in my view, [TOPIC] is more likely to generate long-term benefits for both individuals and society.`
+      },
+      {
+        id: "t2",
+        name: "2. Essay: Agree - Disagree",
+        targetWords: 250,
+        content: `In recent years, [TOPIC] has become an increasingly controversial issue. Some people argue that this phenomenon brings many benefits, while others believe that it has some drawbacks. In this essay, I will discuss both perspectives before explaining why I am in favor of [OPINION CHOSEN].
+
+On the one hand, there are several reasons why some people do not support the view that [OPINION CHOSEN]. One significant reason is that [MAIN IDEA 1]. This is mainly because [REASON 1]. Consequently, this may result in [RESULT 1]. For example, [EXAMPLE 1]. In addition, supporters of this view argue that it can bring more drawbacks such as [MAIN IDEA 2]. Therefore, I believe that these arguments are less convincing than the opposing viewpoint.
+
+On the other hand, there are also compelling reasons why others, including myself, believe that [OPINION CHOSEN]. One key reason is that [MAIN IDEA 1 - PRO]. This is due to the fact that [REASON 1]. As a result, [RESULT 1]. For instance, [EXAMPLE 1]. Furthermore, another important factor is that [MAIN IDEA 2 - PRO]. This can be attributed to [REASON 2]. Therefore, [RESULT 2].
+
+In conclusion, although both viewpoints have their own merits, I firmly believe that [OPINION CHOSEN] is the better option for the reasons outlined above. In my view, it is more likely to generate long-term benefits for both individuals and society.`
+      },
+      {
+        id: "t3",
+        name: "3. Essay: Discussion Both Views",
+        targetWords: 250,
+        content: `In recent years, [TOPIC] has become an increasingly controversial issue. Some people argue that this phenomenon brings many benefits, while others maintain that it has some drawbacks. In this essay, I will discuss both perspectives before explaining why I am in favor of [OPINION CHOSEN].
+
+On the one hand, there are several reasons why some people support the view that [OPINION NOT CHOSEN]. One significant reason is that [MAIN IDEA 1]. This is mainly because [REASON 1]. Consequently, this may result in [RESULT 1]. For example, [EXAMPLE 1]. In addition, supporters of this view argue that it can bring more benefits such as [MAIN IDEA 2]. Nevertheless, despite these advantages, I believe that these arguments are less convincing than the opposing viewpoint.
+
+On the other hand, there are also compelling reasons why others, including myself, believe that [OPINION CHOSEN]. One key reason is that [MAIN IDEA 1]. This is due to the fact that [REASON 1]. As a result, [RESULT 1]. For instance, [EXAMPLE 1]. Furthermore, another important factor is that [MAIN IDEA 2]. This can be attributed to [REASON 2]. Therefore, [RESULT 2].
+
+In conclusion, although both viewpoints have their own merits, I firmly believe that [OPINION CHOSEN] is the better option for the reasons outlined above. In my view, it is more likely to generate long-term benefits for both individuals and society.`
+      },
+      {
+        id: "t4",
+        name: "4. Essay: Cause - Effect - Solution",
+        targetWords: 250,
+        content: `In recent years, [TOPIC] has become an increasingly significant issue in modern society. This situation can be attributed to several factors and may result in a number of negative consequences. In this essay, I will discuss the main causes and solutions related to this issue.
+
+On the one hand, there are several causes associated with this issue. One major cause is that [CAUSE 1]. To be more specific, [REASON 1]. As a result, this may lead to [RESULT 1]. For example, [EXAMPLE 1]. Another contributing cause is that [CAUSE 2]. This is largely because [REASON 2]. Consequently, [RESULT 2].
+
+On the other hand, there are also some solutions worth considering. One important aspect is that [SOLUTION 1]. This is due to the fact that [REASON 1]. Therefore, [RESULT 1]. For instance, [EXAMPLE 1]. Furthermore, another important aspect is that [SOLUTION 2]. This can be attributed to [REASON 2]. As a consequence, [RESULT 2].
+
+In conclusion, [TOPIC] is a significant issue with various causes and effects. Therefore, effective measures should be implemented to address this problem and minimize its negative consequences.`
+      },
+      {
+        id: "t5",
+        name: "5. Essay: Discuss One View (Benefits)",
+        targetWords: 250,
+        content: `In recent years, [TOPIC] has become an increasingly significant issue. Many people argue that this phenomenon brings numerous benefits to both individuals and society. In this essay, I will discuss the main advantages of [TOPIC].
+
+Firstly, there are several reasons why [TOPIC] is highly advantageous. One significant reason is that [MAIN IDEA 1]. This is mainly because [REASON 1]. Consequently, this may result in [RESULT 1]. For example, [EXAMPLE 1]. In addition, supporters of this view argue that it can bring more benefits such as [EXTRA BENEFIT].
+
+Secondly, there are also compelling reasons why others believe that [TOPIC] is highly beneficial. One key reason is that [MAIN IDEA 2]. This is due to the fact that [REASON 2]. As a result, [RESULT 2]. For instance, [EXAMPLE 2]. Furthermore, another important factor is that [MAIN IDEA 3]. This can be attributed to [REASON 3]. Therefore, [RESULT 3].
+
+In conclusion, although every aspect of life has its own challenges, in my view, [TOPIC] is more likely to generate long-term benefits for both individuals and society.`
+      },
+      {
+        id: "t6",
+        name: "6. Email: Cung cấp thông tin (CCTT - Bạn bè)",
+        targetWords: 120,
+        content: `Dear [Friend's Name],
+
+How are you? I hope you are doing well. Thank you for your email about [TOPIC]. I deeply appreciate that, and I am writing this email to answer all of your questions.
+
+Firstly, I would like to answer your first question about [QUESTION 1]. In my opinion, [ANSWER 1] because it helps me [IDEA R-E-F 1]. For example, [EXAMPLE 1].
+
+Secondly, in response to your question about [QUESTION 2], I think [ANSWER 2]. The reason is that [REASON 2], which allows us to [RESULT 2].
+
+Lastly, regarding [QUESTION 3], I suggest that [ANSWER 3]. This is because [REASON 3].
+
+I hope that I have answered all of your questions. If you have any further questions, please feel free to contact me. I am looking forward to hearing from you soon.
+
+Best regards,`
+      },
+      {
+        id: "t7",
+        name: "7. Email: Yêu cầu thông tin (YCTT - Trung tâm)",
+        targetWords: 120,
+        content: `Dear Sir or Madam,
+
+I am writing this email to inquire about [COURSE / SERVICE NAME] at your center, as I am very interested in enrolling for [MYSELF / MY DAUGHTER]. I would be grateful if you could provide me with some detailed information.
+
+Firstly, I would like to know about the class schedule and the number of sessions per week. I need to know this because I want to make sure the timetable fits well with our daily routine.
+
+Secondly, could you please provide me with the exact tuition fees for the course, including any extra costs for textbooks or study materials? I want to know this because I need to plan my budget carefully.
+
+Lastly, are there any extracurricular activities included in the program? I would love to know if learners can join interactive clubs or outdoor events to practice English in a fun way.
+
+Thank you in advance for your help. I look forward to hearing from you soon.
+
+Yours faithfully,`
+      },
+      {
+        id: "t8",
+        name: "8. Email: Phản hồi & Hỏi thêm (Hotel / Store)",
+        targetWords: 120,
+        content: `Dear Manager,
+
+Thank you for your email regarding my recent experience at your [HOTEL / BOOKSTORE]. I appreciate the opportunity to share my feedback with you.
+
+Firstly, what I liked most during my visit was [POSITIVE POINT, e.g., the friendly staff and modern facilities]. This made me feel very comfortable and helped me relax after a long day.
+
+Secondly, regarding areas for improvement, I think you should [SUGGESTION, e.g., upgrade the Wi-Fi connection / add a cozy reading corner], as this would make the experience even more convenient for guests.
+
+Finally, I will definitely recommend your place to my friends and colleagues because of the reasonable price and great service. In addition, could you please check if your staff found [LOST ITEM] in my room, or let me know about any discount programs for my next visit?
+
+I look forward to hearing from you soon.
+
+Best regards,`
+      }
+    ];
+
+    // =========================================================================
+    // 5. 8 BÀI MẪU HOÀN CHỈNH TỪ GIÁO TRÌNH B1-104
+    // =========================================================================
+    const SAMPLES_DATA = [
+      {
+        id: "s1",
+        type: "Essay",
+        badge: "Advantages - Disadvantages",
+        title: "Đề 1: Pros and Cons of Textbooks in Education",
+        words: 278,
+        text: `In recent years, the use of textbooks in education has become an increasingly controversial issue. Some people argue that this phenomenon brings many benefits, while others believe that it has some drawbacks. In this essay, I will discuss both perspectives.
+
+On the one hand, there are several reasons why some people support the view that textbooks in education are detrimental. One significant reason is that buying textbooks increases financial pressure on students. This is mainly because learners have to pay tuition fees and spend extra money on expensive books every semester. Consequently, this may result in heavy financial pressure, especially for those with limited incomes. For example, many low-income families struggle to buy new books at the beginning of each school year. In addition, supporters of this view argue that textbooks can be monotonous and quickly become outdated compared to digital materials.
+
+On the other hand, there are also compelling reasons why others believe that textbooks are highly beneficial. One key reason is that they help students broaden knowledge. This is due to the fact that textbooks provide structured content and reliable information organized by experts. As a result, students can enhance their academic performance and achieve higher test scores. For instance, standardized English and math textbooks help learners grasp core concepts step by step. Furthermore, another important factor is that textbooks help increase self-confidence without digital distractions.
+
+In conclusion, although both viewpoints have their own merits, in my view, textbooks are more likely to generate long-term benefits when combined with modern digital resources.`
+      },
+      {
+        id: "s2",
+        type: "Essay",
+        badge: "Agree - Disagree",
+        title: "Đề 2: 'It is never too late to learn' (Lifelong Learning)",
+        words: 285,
+        text: `In recent years, lifelong learning has become an increasingly controversial issue. Some people argue that learning mainly takes place when people are young, while others believe that it is never too late to learn. In this essay, I will discuss both perspectives before explaining why I am in favor of the statement that it is never too late to learn.
+
+On the one hand, there are several reasons why some people do not support the view that people can learn at any age. One significant reason is that studying later in life can be time-consuming. This is mainly because adults must balance full-time jobs with family responsibilities. Consequently, this may result in stress and having less time for relaxation. For example, an older worker who attends evening classes may feel exhausted after a long working day. In addition, supporters of this view argue that it can increase financial pressure due to course fees. Therefore, I believe that these arguments are less convincing than the opposing viewpoint.
+
+On the other hand, there are also compelling reasons why others, including myself, believe that it is never too late to learn. One key reason is that continuous learning helps people broaden knowledge and keep up with modern technology. This is due to the fact that industries change rapidly, requiring updated skills. As a result, learners can enhance their professional competence and secure a well-paid job. Furthermore, another important factor is that learning increases self-confidence and keeps the mind active.
+
+In conclusion, although both viewpoints have their own merits, I firmly believe that it is never too late to learn for the reasons outlined above.`
+      },
+      {
+        id: "s3",
+        type: "Essay",
+        badge: "Advantages - Disadvantages",
+        title: "Đề BTVN: Working from Home (Làm việc tại nhà)",
+        words: 265,
+        text: `In recent years, working from home has become an increasingly controversial issue. Some people argue that this phenomenon brings many benefits, while others believe that it has some drawbacks. In this essay, I will discuss both perspectives.
+
+On the one hand, there are several reasons why some people support the view that working from home is detrimental. One significant reason is that it reduces face-to-face interaction. This is mainly because employees spend less time communicating directly with their colleagues. Consequently, this may result in finding it difficult to build strong relationships at work. For example, new employees may feel isolated when they only interact through online meetings. In addition, supporters of this view argue that working from home can cause distractions, as workers are exposed to household chores and entertainment.
+
+On the other hand, there are also compelling reasons why others believe that working from home is highly beneficial. One key reason is that it provides greater flexibility. This is due to the fact that workers can arrange their schedules and complete tasks more quickly and efficiently. As a result, they can balance their work and personal lives effectively. Furthermore, another important factor is that it offers greater convenience by eliminating daily commuting. Therefore, employees can save time and focus on other important activities.
+
+In conclusion, although both viewpoints have their own merits, in my view, working from home is more likely to generate long-term benefits for both individuals and society.`
+      },
+      {
+        id: "s4",
+        type: "Essay",
+        badge: "Cause - Effect - Solution",
+        title: "Đề Environment: Climate Change (Causes & Effects)",
+        words: 272,
+        text: `In recent years, climate change has become an increasingly significant issue in modern society. This situation can be attributed to several factors and may result in a number of negative consequences. In this essay, I will discuss the main causes and effects related to this issue.
+
+On the one hand, there are several causes associated with this issue. One major cause is that climate change is caused by various human activities. To be more specific, factories and vehicles release harmful pollutants and high levels of carbon emissions into the atmosphere. As a result, this may lead to rising global temperatures and extreme weather events. For example, burning fossil fuels daily produces massive greenhouse gases. Another contributing cause is that it stems from a lack of awareness of the negative effects of deforestation. Consequently, the planet loses its natural ability to absorb carbon dioxide.
+
+On the other hand, there are also some effects worth considering. One important aspect is that climate change has detrimental effects on human health. This is due to the fact that people are exposed to toxic substances and severe heatwaves. Therefore, this has a negative impact on people's well-being and disrupts daily human activities. Furthermore, another important aspect is that it leads to a decline in biodiversity as wild animals lose their natural habitats, which increases the risk of species extinction.
+
+In conclusion, climate change is a significant issue with various causes and effects. Therefore, effective measures should be implemented to address this problem.`
+      },
+      {
+        id: "s5",
+        type: "Essay",
+        badge: "Discussion Both Views",
+        title: "Đề Transport: Countdown Timers at Traffic Lights",
+        words: 276,
+        text: `In recent years, the removal of countdown timers at traffic lights has become an increasingly controversial issue. Some people argue that this measure helps reduce dangerous driving behaviors, while others maintain that it worsens congestion and causes accidents. In this essay, I will discuss both perspectives before explaining why I am in favor of keeping countdown timers.
+
+On the one hand, there are several reasons why some people support the view that removing countdown timers is beneficial. One significant reason is that it discourages risky driving habits. This is mainly because drivers cannot predict exact light changes, so they slow down cautiously instead of speeding up at the last second. Consequently, this may result in fewer red-light violations. Nevertheless, despite these advantages, I believe that these arguments are less convincing than the opposing viewpoint.
+
+On the other hand, there are also compelling reasons why others, including myself, believe that keeping countdown timers is the better option. One key reason is that timers provide greater convenience and smoother traffic flow. This is due to the fact that drivers know exactly how long they must wait, allowing them to prepare to stop or move smoothly. As a result, sudden braking is minimized and traffic congestion is reduced. Furthermore, another important factor is that keeping timers promotes environmental protection by allowing drivers to turn off their engines during long red lights, which lowers carbon emissions.
+
+In conclusion, although both viewpoints have their own merits, I firmly believe that keeping countdown timers is the better option for both individuals and society.`
+      },
+      {
+        id: "s6",
+        type: "Email",
+        badge: "Email CCTT (Bạn bè)",
+        title: "Email Đề 5: Đi cắm trại cùng Tom (Camping Trip)",
+        words: 158,
+        text: `Dear Tom,
+
+How are you? I hope you are doing well. Thank you for your email about our upcoming camping trip. I deeply appreciate that, and I am writing this email to answer all of your questions.
+
+Firstly, I would like to answer your first question about accommodation. I think I would prefer staying in an outdoor tent because it is a great way to stay close to nature, enjoy the fresh air, and get away from daily pressure.
+
+Secondly, in response to the activities, I would love to join the hiking activity. The reason is that walking in the forest helps me improve my physical health, take nice photos, and create a deep bond with everyone in our group.
+
+Lastly, regarding specific items to bring, I suggest that you should remind everyone to bring comfortable walking shoes, a raincoat, and a water bottle in case the weather changes suddenly.
+
+I hope that I have answered all of your questions. I am looking forward to hearing from you soon.
+
+Best regards,`
+      },
+      {
+        id: "s7",
+        type: "Email",
+        badge: "Email YCTT (Trung tâm)",
+        title: "Email Đề 16: Hỏi khóa học tiếng Anh mùa hè",
+        words: 154,
+        text: `Dear Sir or Madam,
+
+I am looking for an English course for my 10-year-old daughter this summer, and I am writing this email to ask for some detailed information about your program.
+
+Firstly, could you please tell me the class schedule and the number of sessions per week? I want to know whether the classes are in the morning or afternoon because I need to arrange transport and make sure the timetable does not clash with her swimming class.
+
+Secondly, I would be very grateful if you could provide me with the tuition fees for the summer course, including any extra costs for textbooks or study materials. I need to know this to plan my family budget carefully.
+
+Lastly, are there any extracurricular activities included in the program? I hope my daughter can join interactive games or outdoor clubs to practice English in a fun and confident way.
+
+Thank you in advance for your help. I look forward to hearing from you soon.
+
+Yours faithfully,`
+      },
+      {
+        id: "s8",
+        type: "Email",
+        badge: "Email Phản hồi (Hotel)",
+        title: "Email Viết tại lớp: Phản hồi dịch vụ Khách sạn",
+        words: 162,
+        text: `Dear Hotel Manager,
+
+Thank you for your email regarding my recent stay at your hotel. I deeply appreciate your hospitality, and I am writing this email to share my feedback with you.
+
+Firstly, what I liked most about your service during my stay was the modern swimming pool and the friendly front desk staff. They were always welcoming and helpful, which helped me relax and reduce stress after a long trip.
+
+Secondly, regarding areas you should improve, I think you should upgrade the Wi-Fi connection in the rooms, as it was sometimes slow and unstable in the evening.
+
+Finally, I will definitely recommend your hotel to my friends and colleagues because of its great location in the city center and reasonable prices. In addition, could you please check if your housekeeping staff found a silver watch that I accidentally left on the table in my room?
+
+I look forward to hearing from you soon.
+
+Best regards,`
+      }
+    ];
+
+    // =========================================================================
+    // 6. STATE & LOCALSTORAGE PERSISTENCE
+    // =========================================================================
+    let state = {
+      activeTab: 'ideas',
+      selectedTopic: 'ALL',
+      onlyStarred: false,
+      starredIds: JSON.parse(localStorage.getItem('b1_starred') || '[]'),
+      masteredIds: JSON.parse(localStorage.getItem('b1_mastered') || '[]'),
+      weakSpots: JSON.parse(localStorage.getItem('b1_weak_spots') || '[]'),
+      outlineQueue: [],
+      fcDeck: [...IDEAS_DATA],
+      fcIndex: 0,
+      fcFlipped: false,
+      quizMode: 'essay_type',
+      quizList: [],
+      quizIndex: 0,
+      quizScore: 0,
+      quizAnswered: false,
+      examMode: false,
+      timerSeconds: 2400,
+      timerPaused: false,
+      timerInterval: null,
+      darkMode: localStorage.getItem('b1_dark') === 'true'
+    };
+
+    // =========================================================================
+    // 7. INITIALIZATION
+    // =========================================================================
+    window.addEventListener('DOMContentLoaded', () => {
+      if (state.darkMode) document.documentElement.classList.add('dark');
+      updateThemeIcon();
+
+      // Load saved voice prefs
+      const savedAccent = localStorage.getItem('b1_voice_accent') || 'en-US';
+      const savedRate = localStorage.getItem('b1_voice_rate') || '1';
+      document.getElementById('voice-accent').value = savedAccent;
+      document.getElementById('voice-rate').value = savedRate;
+      document.getElementById('voice-accent-mobile').value = savedAccent;
+      document.getElementById('voice-rate-mobile').value = savedRate;
+
+      // Load saved draft
+      const savedDraft = localStorage.getItem('b1_draft');
+      if (savedDraft) {
+        document.getElementById('writing-editor').value = savedDraft;
+      } else {
+        document.getElementById('writing-editor').value = TEMPLATES_DATA[0].content;
+      }
+
+      renderTopicPills();
+      renderIdeas();
+      initFlashcards();
+      renderSpeakingBank();
+      setQuizMode('essay_type');
+      populateBuilderSelectors();
+      renderTemplateButtons();
+      renderSamples();
+      updateCounters();
+      updateWordCount();
+      switchTab('ideas');
+    });
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.remove('hidden');
+      clearTimeout(t._timer);
+      t._timer = setTimeout(() => t.classList.add('hidden'), 2600);
+    }
+
+    function toggleDarkMode() {
+      state.darkMode = !state.darkMode;
+      document.documentElement.classList.toggle('dark', state.darkMode);
+      localStorage.setItem('b1_dark', state.darkMode);
+      updateThemeIcon();
+    }
+
+    function updateThemeIcon() {
+      document.getElementById('theme-icon').textContent = state.darkMode ? '☀️' : '🌙';
+    }
+
+    function switchTab(tabId) {
+      state.activeTab = tabId;
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+      document.getElementById('tab-' + tabId).classList.remove('hidden');
+
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        const active = btn.dataset.tab === tabId;
+        btn.className = active
+          ? 'nav-btn px-3.5 py-2 rounded-lg text-sm font-bold bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm transition flex items-center gap-1.5'
+          : 'nav-btn px-3.5 py-2 rounded-lg text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition flex items-center gap-1.5';
+      });
+
+      document.querySelectorAll('.mob-nav-btn').forEach(btn => {
+        const active = btn.dataset.tab === tabId;
+        btn.className = active
+          ? 'mob-nav-btn relative flex flex-col items-center justify-center gap-0.5 text-[10px] font-extrabold text-indigo-600 dark:text-indigo-400'
+          : 'mob-nav-btn relative flex flex-col items-center justify-center gap-0.5 text-[10px] font-semibold text-slate-500 dark:text-slate-400';
+      });
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function updateCounters() {
+      document.getElementById('mastered-count').textContent = state.masteredIds.length;
+      document.getElementById('starred-count').textContent = state.starredIds.length;
+      document.getElementById('outline-queue-badge').textContent = state.outlineQueue.length;
+
+      const weakCount = state.weakSpots.length;
+      document.getElementById('quiz-weak-count').textContent = weakCount;
+      const dBadge = document.getElementById('desktop-weak-badge');
+      const mBadge = document.getElementById('mobile-weak-badge');
+      if (weakCount > 0) {
+        dBadge.textContent = weakCount;
+        mBadge.textContent = weakCount;
+        dBadge.classList.remove('hidden');
+        mBadge.classList.remove('hidden');
+      } else {
+        dBadge.classList.add('hidden');
+        mBadge.classList.add('hidden');
+      }
+    }
+
+    // =========================================================================
+    // 8. TEXT-TO-SPEECH (TTS) & VOICE RECOGNITION (SHADOWING)
+    // =========================================================================
+    function saveVoicePrefs() {
+      const acc = document.getElementById('voice-accent').value;
+      const rate = document.getElementById('voice-rate').value;
+      document.getElementById('voice-accent-mobile').value = acc;
+      document.getElementById('voice-rate-mobile').value = rate;
+      localStorage.setItem('b1_voice_accent', acc);
+      localStorage.setItem('b1_voice_rate', rate);
+    }
+
+    function syncVoiceFromMobile() {
+      const acc = document.getElementById('voice-accent-mobile').value;
+      const rate = document.getElementById('voice-rate-mobile').value;
+      document.getElementById('voice-accent').value = acc;
+      document.getElementById('voice-rate').value = rate;
+      localStorage.setItem('b1_voice_accent', acc);
+      localStorage.setItem('b1_voice_rate', rate);
+    }
+
+    function speakText(text) {
+      if (!('speechSynthesis' in window)) {
+        showToast('Trình duyệt của bạn không hỗ trợ phát âm thanh.');
+        return;
+      }
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      const accent = document.getElementById('voice-accent').value;
+      const rate = parseFloat(document.getElementById('voice-rate').value);
+      utter.lang = accent;
+      utter.rate = rate;
+      const voices = window.speechSynthesis.getVoices();
+      const matched = voices.find(v => v.lang.includes(accent));
+      if (matched) utter.voice = matched;
+      window.speechSynthesis.speak(utter);
+    }
+
+    // =========================================================================
+    // 9. TAB 1: KHO 62 CHUỖI IDEA R-E-F
+    // =========================================================================
+    function renderTopicPills() {
+      const topics = ['ALL', 'Education', 'Work & Career', 'Technology', 'Health & Food', 'Environment', 'Transport', 'Social & Lifestyle'];
+      const labels = {
+        'ALL': 'Tất cả (62)',
+        'Education': '🎓 Education (10)',
+        'Work & Career': '💼 Work & Career (8)',
+        'Technology': '💻 Technology (10)',
+        'Health & Food': '🥗 Health & Food (8)',
+        'Environment': '🌍 Environment (10)',
+        'Transport': '🚌 Transport (8)',
+        'Social & Lifestyle': '🏡 Social & Life (8)'
+      };
+      const container = document.getElementById('topic-pills');
+      container.innerHTML = topics.map(t => {
+        const active = state.selectedTopic === t;
+        return `<button onclick="selectTopic('${t}')" class="px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition ${
+          active
+            ? 'bg-indigo-600 text-white shadow-sm'
+            : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+        }">${labels[t]}</button>`;
+      }).join('');
+    }
+
+    function selectTopic(topic) {
+      state.selectedTopic = topic;
+      renderTopicPills();
+      renderIdeas();
+    }
+
+    function toggleStarFilter() {
+      state.onlyStarred = !state.onlyStarred;
+      const btn = document.getElementById('btn-filter-starred');
+      btn.classList.toggle('bg-amber-400', state.onlyStarred);
+      btn.classList.toggle('text-slate-950', state.onlyStarred);
+      renderIdeas();
+    }
+
+    function toggleStarIdea(id) {
+      if (state.starredIds.includes(id)) {
+        state.starredIds = state.starredIds.filter(x => x !== id);
+      } else {
+        state.starredIds.push(id);
+        showToast('★ Đã lưu vào danh sách ôn tập!');
+      }
+      localStorage.setItem('b1_starred', JSON.stringify(state.starredIds));
+      updateCounters();
+      renderIdeas();
+    }
+
+    function sendToOutlineBuilder(id) {
+      const item = IDEAS_DATA.find(x => x.id === id);
+      if (!item) return;
+      if (item.polarity === 'CON') {
+        const b1_1 = document.getElementById('b1-idea1');
+        const b1_2 = document.getElementById('b1-idea2');
+        if (b1_1.value != id) {
+          b1_2.value = b1_1.value;
+          b1_1.value = id;
+        }
+      } else {
+        const b2_1 = document.getElementById('b2-idea1');
+        const b2_2 = document.getElementById('b2-idea2');
+        if (b2_1.value != id) {
+          b2_2.value = b2_1.value;
+          b2_1.value = id;
+        }
+      }
+      if (!state.outlineQueue.includes(id)) state.outlineQueue.push(id);
+      updateCounters();
+      showToast(`⚡ Đã đưa "${item.point}" vào Dàn ý R-E-F!`);
+    }
+
+    function renderIdeas() {
+      const q = document.getElementById('idea-search').value.toLowerCase().trim();
+      const pol = document.getElementById('idea-polarity').value;
+
+      const filtered = IDEAS_DATA.filter(item => {
+        if (state.selectedTopic !== 'ALL' && item.topic !== state.selectedTopic) return false;
+        if (pol !== 'ALL' && item.polarity !== pol) return false;
+        if (state.onlyStarred && !state.starredIds.includes(item.id)) return false;
+        if (q) {
+          const hay = `${item.topic} ${item.point} ${item.vi} ${item.reason} ${item.result}`.toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
+
+      const grid = document.getElementById('ideas-grid');
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="col-span-full text-center py-12 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 text-slate-500">Không tìm thấy chuỗi Idea nào phù hợp. Hãy thử từ khóa khác!</div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(item => {
+        const isStar = state.starredIds.includes(item.id);
+        const isPro = item.polarity === 'PRO';
+        return `
+          <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:border-indigo-300 dark:hover:border-indigo-700 transition flex flex-col justify-between gap-3">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2.5">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="px-2 py-0.5 rounded-md text-[11px] font-bold bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300">${item.topic}</span>
+                  <span class="px-2 py-0.5 rounded-md text-[11px] font-bold ${isPro ? 'bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300' : 'bg-rose-50 dark:bg-rose-950 text-rose-700 dark:text-rose-300'}">
+                    ${isPro ? '✅ Ưu điểm / Giải pháp' : '⚠️ Nhược điểm / Nguyên nhân'}
+                  </span>
+                </div>
+                <div class="flex items-center gap-1 shrink-0">
+                  <button onclick="speakText('${item.point.replace(/'/g, "\\'")}. Because ${item.reason.replace(/'/g, "\\'")}, consequently it helps ${item.result.replace(/'/g, "\\'")}')" class="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-indigo-100 dark:hover:bg-indigo-900 text-xs" title="Nghe phát âm">🔊</button>
+                  <button onclick="toggleStarIdea(${item.id})" class="p-1.5 rounded-lg ${isStar ? 'bg-amber-100 text-amber-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'} text-xs" title="Lưu thẻ">★</button>
+                </div>
+              </div>
+
+              <!-- 3-Step R-E-F Chain -->
+              <div class="space-y-2">
+                <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border-l-4 border-indigo-500">
+                  <div class="text-[10px] font-extrabold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">1. Luận điểm (Main Point)</div>
+                  <div class="font-bold text-sm sm:text-base text-slate-900 dark:text-white">${item.point}</div>
+                  <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${item.vi}</div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                  <div class="p-2.5 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/60 dark:border-amber-900/40">
+                    <span class="font-extrabold text-amber-700 dark:text-amber-300 block mb-0.5">2. Nguyên nhân (Reason):</span>
+                    <span class="text-slate-700 dark:text-slate-200 font-medium">${item.reason}</span>
+                  </div>
+                  <div class="p-2.5 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200/60 dark:border-emerald-900/40">
+                    <span class="font-extrabold text-emerald-700 dark:text-emerald-300 block mb-0.5">3. Kết quả (Effect):</span>
+                    <span class="text-slate-700 dark:text-slate-200 font-medium">${item.result}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
+              <span class="text-[11px] font-semibold text-slate-400">#${item.id} • Chuẩn BETMA</span>
+              <button onclick="sendToOutlineBuilder(${item.id})" class="px-3 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950 hover:bg-indigo-600 hover:text-white text-indigo-700 dark:text-indigo-300 text-xs font-bold transition">
+                + Đưa vào Dàn ý R-E-F
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // =========================================================================
+    // 10. TAB 2: FLASHCARDS 3D & SPEAKING SHADOWING
+    // =========================================================================
+    function initFlashcards() {
+      const topic = document.getElementById('fc-topic-select').value;
+      if (topic === 'ALL') {
+        state.fcDeck = [...IDEAS_DATA];
+      } else if (topic === 'STARRED') {
+        const s = IDEAS_DATA.filter(x => state.starredIds.includes(x.id));
+        state.fcDeck = s.length ? s : [...IDEAS_DATA];
+        if (!s.length) showToast('Bạn chưa đánh dấu thẻ nào, đang hiển thị tất cả.');
+      } else {
+        state.fcDeck = IDEAS_DATA.filter(x => x.topic === topic);
+      }
+      state.fcIndex = 0;
+      state.fcFlipped = false;
+      renderFlashcard();
+    }
+
+    function shuffleFlashcards() {
+      for (let i = state.fcDeck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [state.fcDeck[i], state.fcDeck[j]] = [state.fcDeck[j], state.fcDeck[i]];
+      }
+      state.fcIndex = 0;
+      state.fcFlipped = false;
+      renderFlashcard();
+      showToast('🔀 Đã trộn ngẫu nhiên bộ thẻ!');
+    }
+
+    function renderFlashcard() {
+      const card = state.fcDeck[state.fcIndex];
+      if (!card) return;
+      document.getElementById('fc-index').textContent = state.fcIndex + 1;
+      document.getElementById('fc-total').textContent = state.fcDeck.length;
+      document.getElementById('fc-topic-badge').textContent = card.topic;
+      document.getElementById('fc-front-en').textContent = card.point;
+      document.getElementById('fc-front-vi').textContent = card.vi;
+      document.getElementById('fc-back-reason').textContent = card.reason;
+      document.getElementById('fc-back-result').textContent = card.result;
+
+      const polTag = document.getElementById('fc-polarity-tag');
+      if (card.polarity === 'PRO') {
+        polTag.textContent = '✅ Ưu điểm / Giải pháp';
+        polTag.className = 'px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-700';
+      } else {
+        polTag.textContent = '⚠️ Nhược điểm / Nguyên nhân';
+        polTag.className = 'px-2.5 py-1 rounded-lg text-xs font-bold bg-rose-100 text-rose-700';
+      }
+
+      const inner = document.getElementById('fc-inner');
+      inner.classList.toggle('rotate-y-180', state.fcFlipped);
+
+      const isMastered = state.masteredIds.includes(card.id);
+      const mBtn = document.getElementById('btn-fc-master');
+      mBtn.textContent = isMastered ? '🌟 Đã thuộc thẻ này (Bấm để bỏ)' : '✅ Đánh dấu Đã thuộc';
+      mBtn.className = isMastered
+        ? 'col-span-2 py-3 rounded-xl bg-amber-500 text-slate-950 font-extrabold text-sm shadow transition'
+        : 'col-span-2 py-3 rounded-xl bg-emerald-600 text-white font-bold text-sm shadow hover:bg-emerald-700 transition';
+
+      document.getElementById('speech-result-box').classList.add('hidden');
+    }
+
+    function flipCard() {
+      state.fcFlipped = !state.fcFlipped;
+      document.getElementById('fc-inner').classList.toggle('rotate-y-180', state.fcFlipped);
+    }
+
+    function nextCard() {
+      state.fcIndex = (state.fcIndex + 1) % state.fcDeck.length;
+      state.fcFlipped = false;
+      renderFlashcard();
+    }
+
+    function prevCard() {
+      state.fcIndex = (state.fcIndex - 1 + state.fcDeck.length) % state.fcDeck.length;
+      state.fcFlipped = false;
+      renderFlashcard();
+    }
+
+    function toggleMasterCurrentCard() {
+      const card = state.fcDeck[state.fcIndex];
+      if (!card) return;
+      if (state.masteredIds.includes(card.id)) {
+        state.masteredIds = state.masteredIds.filter(x => x !== card.id);
+      } else {
+        state.masteredIds.push(card.id);
+        showToast('⭐ Tuyệt vời! Đã cộng +1 thẻ thuộc.');
+      }
+      localStorage.setItem('b1_mastered', JSON.stringify(state.masteredIds));
+      updateCounters();
+      renderFlashcard();
+    }
+
+    function speakCurrentCard() {
+      const card = state.fcDeck[state.fcIndex];
+      if (card) speakText(card.point);
+    }
+
+    function speakFullChain() {
+      const card = state.fcDeck[state.fcIndex];
+      if (card) speakText(`${card.point}. This is because ${card.reason}. As a result, ${card.result}.`);
+    }
+
+    function startSpeechCheck() {
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRec) {
+        showToast('Trình duyệt chưa hỗ trợ Micro (Hãy dùng Chrome / Safari mới nhất).');
+        return;
+      }
+      const card = state.fcDeck[state.fcIndex];
+      const rec = new SpeechRec();
+      rec.lang = document.getElementById('voice-accent').value;
+      rec.interimResults = false;
+      rec.maxAlternatives = 1;
+
+      const label = document.getElementById('voice-btn-label');
+      label.textContent = 'Đang nghe...';
+
+      rec.onresult = (e) => {
+        const spoken = e.results[0][0].transcript;
+        const targetWords = card.point.toLowerCase().replace(/[^a-z0-9\s]/g, '').split(/\s+/);
+        const spokenWords = spoken.toLowerCase().replace(/[^a-z0-9\s]/g, '').split(/\s+/);
+        let hits = 0;
+        targetWords.forEach(w => { if (spokenWords.includes(w)) hits++; });
+        const pct = Math.round((hits / targetWords.length) * 100);
+
+        document.getElementById('speech-result-box').classList.remove('hidden');
+        document.getElementById('speech-transcript').textContent = `"${spoken}"`;
+        const badge = document.getElementById('speech-score-badge');
+        badge.textContent = `Khớp ${pct}%`;
+        badge.className = pct >= 75
+          ? 'px-2 py-0.5 rounded-full font-extrabold text-xs bg-emerald-100 text-emerald-700'
+          : 'px-2 py-0.5 rounded-full font-extrabold text-xs bg-amber-100 text-amber-700';
+      };
+
+      rec.onerror = () => showToast('Không nhận được giọng nói, hãy thử lại gần micro hơn!');
+      rec.onend = () => { label.textContent = 'Bấm để nói'; };
+      rec.start();
+    }
+
+    function renderSpeakingBank() {
+      const f = document.getElementById('speaking-part-filter').value;
+      const list = SPEAKING_DATA.filter(s => f === 'ALL' || s.part === f);
+      document.getElementById('speaking-list').innerHTML = list.map(s => `
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-0.5 rounded-md text-xs font-extrabold bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300">${s.part}</span>
+            <button onclick="speakText('${s.questions[0].replace(/'/g, "\\'")}')" class="text-xs font-bold text-indigo-600 dark:text-indigo-400">🔊 Nghe câu hỏi</button>
+          </div>
+          <h4 class="font-bold text-sm text-slate-900 dark:text-white">${s.title}</h4>
+          <ul class="text-xs text-slate-700 dark:text-slate-300 space-y-1">
+            ${s.questions.map(q => `<li>• ${q}</li>`).join('')}
+          </ul>
+          <div class="p-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-xs text-emerald-800 dark:text-emerald-200 font-medium">
+            💡 <strong>Gợi ý trả lời:</strong> ${s.tip}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // =========================================================================
+    // 11. TAB 3: TRẮC NGHIỆM & SỔ TAY LỖI SAI (WEAK-SPOT DRILLING)
+    // =========================================================================
+    function getAllQuestionsFlat() {
+      return [...QUIZ_DATA.essay_type, ...QUIZ_DATA.email_pronoun, ...QUIZ_DATA.reading_idea];
+    }
+
+    function setQuizMode(mode) {
+      state.quizMode = mode;
+      document.querySelectorAll('.qmode-btn').forEach(btn => {
+        const active = btn.dataset.qmode === mode;
+        if (btn.dataset.qmode === 'weak_spots') {
+          btn.className = active
+            ? 'qmode-btn px-3 py-2 rounded-xl text-xs font-extrabold bg-rose-600 text-white shadow transition'
+            : 'qmode-btn px-3 py-2 rounded-xl text-xs font-bold bg-rose-50 text-rose-700 dark:bg-rose-950 dark:text-rose-300 border border-rose-200 dark:border-rose-800 transition';
+        } else {
+          btn.className = active
+            ? 'qmode-btn px-3 py-2 rounded-xl text-xs font-extrabold bg-indigo-600 text-white shadow transition'
+            : 'qmode-btn px-3 py-2 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition';
+        }
+      });
+
+      if (mode === 'weak_spots') {
+        const allQ = getAllQuestionsFlat();
+        const weakList = allQ.filter(q => state.weakSpots.includes(q.id));
+        if (weakList.length === 0) {
+          showToast('🎉 Tuyệt vời! Bạn không còn câu sai nào trong Sổ tay.');
+          setQuizMode('essay_type');
+          return;
+        }
+        state.quizList = weakList;
+      } else {
+        state.quizList = [...QUIZ_DATA[mode]];
+      }
+
+      state.quizIndex = 0;
+      state.quizScore = 0;
+      renderQuizQuestion();
+    }
+
+    function resetQuizSession() {
+      state.quizIndex = 0;
+      state.quizScore = 0;
+      renderQuizQuestion();
+    }
+
+    function renderQuizQuestion() {
+      const q = state.quizList[state.quizIndex];
+      if (!q) return;
+      state.quizAnswered = false;
+
+      document.getElementById('q-current').textContent = state.quizIndex + 1;
+      document.getElementById('q-total').textContent = state.quizList.length;
+      document.getElementById('q-score').textContent = state.quizScore;
+
+      const modeLabels = {
+        essay_type: 'Chế độ 1: Nhận diện Dạng bài Luận',
+        email_pronoun: 'Chế độ 2: Chuyển đổi Chủ ngữ & Mẫu Email',
+        reading_idea: 'Chế độ 3: Đọc hiểu BMI & Chuỗi Idea R-E-F',
+        weak_spots: '⚠️ Sổ tay Lỗi sai (Trả lời đúng để xóa khỏi sổ)'
+      };
+      document.getElementById('q-tag').textContent = modeLabels[state.quizMode];
+      document.getElementById('q-prompt').textContent = q.q;
+
+      const fb = document.getElementById('q-feedback');
+      fb.classList.add('hidden');
+      document.getElementById('btn-next-q').classList.add('hidden');
+
+      const letters = ['A', 'B', 'C', 'D'];
+      document.getElementById('q-options').innerHTML = q.opts.map((opt, idx) => `
+        <button onclick="selectQuizOption(${idx})" id="qopt-${idx}" class="w-full text-left p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:border-indigo-500 font-semibold text-xs sm:text-sm transition flex items-start gap-2.5">
+          <span class="w-6 h-6 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-extrabold text-xs shrink-0">${letters[idx]}</span>
+          <span>${opt}</span>
+        </button>
+      `).join('');
+    }
+
+    function selectQuizOption(idx) {
+      if (state.quizAnswered) return;
+      state.quizAnswered = true;
+      const q = state.quizList[state.quizIndex];
+      const correct = idx === q.ans;
+
+      q.opts.forEach((_, i) => {
+        const btn = document.getElementById(`qopt-${i}`);
+        if (i === q.ans) {
+          btn.className = 'w-full text-left p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border-2 border-emerald-500 font-bold text-xs sm:text-sm text-emerald-900 dark:text-emerald-200 flex items-start gap-2.5';
+        } else if (i === idx && !correct) {
+          btn.className = 'w-full text-left p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/60 border-2 border-rose-500 font-bold text-xs sm:text-sm text-rose-900 dark:text-rose-200 flex items-start gap-2.5';
+        }
+      });
+
+      const fb = document.getElementById('q-feedback');
+      fb.classList.remove('hidden');
+
+      if (correct) {
+        state.quizScore++;
+        document.getElementById('q-score').textContent = state.quizScore;
+        // Remove from weak spots if mastered
+        if (state.weakSpots.includes(q.id)) {
+          state.weakSpots = state.weakSpots.filter(x => x !== q.id);
+          localStorage.setItem('b1_weak_spots', JSON.stringify(state.weakSpots));
+          updateCounters();
+        }
+        fb.className = 'p-4 rounded-xl bg-emerald-100/80 dark:bg-emerald-950/70 text-emerald-900 dark:text-emerald-200 text-xs sm:text-sm font-medium';
+        fb.innerHTML = `✅ <strong>Chính xác!</strong> ${q.exp}`;
+      } else {
+        if (!state.weakSpots.includes(q.id)) {
+          state.weakSpots.push(q.id);
+          localStorage.setItem('b1_weak_spots', JSON.stringify(state.weakSpots));
+          updateCounters();
+        }
+        fb.className = 'p-4 rounded-xl bg-rose-100/80 dark:bg-rose-950/70 text-rose-900 dark:text-rose-200 text-xs sm:text-sm font-medium';
+        fb.innerHTML = `❌ <strong>Chưa đúng (Đã lưu vào Sổ tay Lỗi sai).</strong> ${q.exp}`;
+      }
+
+      document.getElementById('btn-next-q').classList.remove('hidden');
+    }
+
+    function nextQuizQuestion() {
+      if (state.quizIndex + 1 < state.quizList.length) {
+        state.quizIndex++;
+        renderQuizQuestion();
+      } else {
+        showToast(`🏁 Hoàn thành! Bạn đạt ${state.quizScore}/${state.quizList.length} điểm.`);
+        state.quizIndex = 0;
+        state.quizScore = 0;
+        renderQuizQuestion();
+      }
+    }
+
+    function speakQuizPrompt() {
+      const q = state.quizList[state.quizIndex];
+      if (q) speakText(q.q);
+    }
+
+    // =========================================================================
+    // 12. TAB 4: STUDIO VIẾT BÀI, DÀN Ý R-E-F & CHẾ ĐỘ PHÒNG THI
+    // =========================================================================
+    function populateBuilderSelectors() {
+      const cons = IDEAS_DATA.filter(x => x.polarity === 'CON');
+      const pros = IDEAS_DATA.filter(x => x.polarity === 'PRO');
+
+      const b1Options = cons.map(x => `<option value="${x.id}">[${x.topic}] ${x.point} (${x.vi})</option>`).join('');
+      const b2Options = pros.map(x => `<option value="${x.id}">[${x.topic}] ${x.point} (${x.vi})</option>`).join('');
+
+      document.getElementById('b1-idea1').innerHTML = b1Options;
+      document.getElementById('b1-idea2').innerHTML = b1Options;
+      document.getElementById('b2-idea1').innerHTML = b2Options;
+      document.getElementById('b2-idea2').innerHTML = b2Options;
+
+      if (cons.length > 1) document.getElementById('b1-idea2').selectedIndex = 1;
+      if (pros.length > 1) document.getElementById('b2-idea2').selectedIndex = 1;
+    }
+
+    function toggleBuilderCollapse() {
+      const body = document.getElementById('ref-builder-body');
+      const btn = document.getElementById('btn-toggle-builder');
+      const hidden = body.classList.toggle('hidden');
+      btn.textContent = hidden ? 'Mở rộng ▼' : 'Thu gọn ▲';
+    }
+
+    function lowerFirst(str) {
+      return str.charAt(0).toLowerCase() + str.slice(1);
+    }
+
+    function generateEssayFromBuilder() {
+      const type = document.getElementById('builder-type').value;
+      const topic = document.getElementById('builder-topic').value.trim() || 'this issue';
+      const opinion = document.getElementById('builder-opinion').value.trim() || `${topic} is the better option`;
+
+      const i1 = IDEAS_DATA.find(x => x.id == document.getElementById('b1-idea1').value);
+      const i2 = IDEAS_DATA.find(x => x.id == document.getElementById('b1-idea2').value);
+      const i3 = IDEAS_DATA.find(x => x.id == document.getElementById('b2-idea1').value);
+      const i4 = IDEAS_DATA.find(x => x.id == document.getElementById('b2-idea2').value);
+
+      let essay = '';
+
+      if (type === 'cause_sol') {
+        essay = `In recent years, ${topic} has become an increasingly significant issue in modern society. This situation can be attributed to several factors and may result in a number of negative consequences. In this essay, I will discuss the main causes and solutions related to this issue.
+
+On the one hand, there are several causes associated with this issue. One major cause is that ${topic} can ${lowerFirst(i1.point)}. To be more specific, ${lowerFirst(i1.reason)}. As a result, this may lead to ${lowerFirst(i1.result)}. For example, many communities are currently facing this challenge in daily life. Another contributing cause is that it can ${lowerFirst(i2.point)}. This is largely because ${lowerFirst(i2.reason)}. Consequently, this may ${lowerFirst(i2.result)}.
+
+On the other hand, there are also some solutions worth considering. One important aspect is that ${lowerFirst(i3.point)}. This is due to the fact that ${lowerFirst(i3.reason)}. Therefore, this helps ${lowerFirst(i3.result)}. For instance, governments and schools can implement practical programs to address this problem. Furthermore, another important aspect is that ${lowerFirst(i4.point)}. This can be attributed to the fact that ${lowerFirst(i4.reason)}. As a consequence, society can ${lowerFirst(i4.result)}.
+
+In conclusion, ${topic} is a significant issue with various causes and effects. Therefore, effective measures should be implemented to address this problem and minimize its negative consequences.`;
+      } else if (type === 'agree_dis' || type === 'discuss_both') {
+        essay = `In recent years, ${topic} has become an increasingly controversial issue. Some people argue that this phenomenon brings many benefits, while others believe that it has some drawbacks. In this essay, I will discuss both perspectives before explaining why I am in favor of ${opinion}.
+
+On the one hand, there are several reasons why some people do not support the view that ${opinion}. One significant reason is that ${topic} can ${lowerFirst(i1.point)}. This is mainly because people ${lowerFirst(i1.reason)}. Consequently, this may result in ${lowerFirst(i1.result)}. For example, many individuals experience this difficulty in their daily routine. In addition, supporters of this view argue that it can bring more drawbacks such as helping to ${lowerFirst(i2.point)}. Therefore, I believe that these arguments are less convincing than the opposing viewpoint.
+
+On the other hand, there are also compelling reasons why others, including myself, believe that ${opinion}. One key reason is that it can ${lowerFirst(i3.point)}. This is due to the fact that people ${lowerFirst(i3.reason)}. As a result, they can ${lowerFirst(i3.result)}. For instance, in modern society, this advantage is clearly seen among students and workers. Furthermore, another important factor is that it helps to ${lowerFirst(i4.point)}. This can be attributed to the fact that people ${lowerFirst(i4.reason)}. Therefore, individuals can ${lowerFirst(i4.result)}.
+
+In conclusion, although both viewpoints have their own merits, I firmly believe that ${opinion} is the better option for the reasons outlined above. In my view, it is more likely to generate long-term benefits for both individuals and society.`;
+      } else if (type === 'one_view') {
+        essay = `In recent years, ${topic} has become an increasingly significant issue. Many people argue that this phenomenon brings numerous benefits to both individuals and society. In this essay, I will discuss the main advantages of ${topic}.
+
+Firstly, there are several reasons why ${topic} is highly advantageous. One significant reason is that it helps people ${lowerFirst(i3.point)}. This is mainly because individuals ${lowerFirst(i3.reason)}. Consequently, this may result in helping them ${lowerFirst(i3.result)}. For example, many young people in Vietnam benefit greatly from this in their studies and work. In addition, supporters of this view argue that it can bring more advantages in daily life.
+
+Secondly, there are also compelling reasons why others believe that ${topic} is highly beneficial. One key reason is that it can ${lowerFirst(i4.point)}. This is due to the fact that people ${lowerFirst(i4.reason)}. As a result, they can ${lowerFirst(i4.result)}. For instance, this positive impact can be seen across many modern communities. Furthermore, another important factor is that it contributes to sustainable personal growth.
+
+In conclusion, although every aspect of life has its own merits, in my view, ${topic} is more likely to generate long-term benefits for both individuals and society.`;
+      } else {
+        // Advantages - Disadvantages
+        essay = `In recent years, ${topic} has become an increasingly controversial issue. Some people argue that this phenomenon brings many benefits, while others believe that it has some drawbacks. In this essay, I will discuss both perspectives.
+
+On the one hand, there are several reasons why some people support the view that ${topic} is detrimental. One significant reason is that it can ${lowerFirst(i1.point)}. This is mainly because people ${lowerFirst(i1.reason)}. Consequently, this may result in ${lowerFirst(i1.result)}. For example, many students and workers face this problem in daily life. In addition, supporters of this view argue that it can bring more drawbacks such as causing people to ${lowerFirst(i2.point)}.
+
+On the other hand, there are also compelling reasons why others believe that ${topic} is highly beneficial. One key reason is that it helps people ${lowerFirst(i3.point)}. This is due to the fact that individuals ${lowerFirst(i3.reason)}. As a result, they can ${lowerFirst(i3.result)}. For instance, this brings clear positive changes to modern life. Furthermore, another important factor is that it can ${lowerFirst(i4.point)}. This can be attributed to the fact that people ${lowerFirst(i4.reason)}. Therefore, they can ${lowerFirst(i4.result)}.
+
+In conclusion, although both viewpoints have their own merits, in my view, ${topic} is more likely to generate long-term benefits for both individuals and society.`;
+      }
+
+      document.getElementById('writing-editor').value = essay;
+      document.getElementById('word-target').textContent = '250';
+      updateWordCount();
+      showToast('✨ Đã lắp ráp bài luận R-E-F hoàn chỉnh! Hãy bổ sung ví dụ cụ thể.');
+    }
+
+    function renderTemplateButtons() {
+      document.getElementById('template-buttons').innerHTML = TEMPLATES_DATA.map(t => `
+        <button onclick="loadTemplate('${t.id}')" class="w-full text-left px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 border border-slate-200 dark:border-slate-700 text-xs font-bold transition flex items-center justify-between">
+          <span>${t.name}</span>
+          <span class="text-[10px] text-slate-400">≥${t.targetWords}w</span>
+        </button>
+      `).join('');
+    }
+
+    function loadTemplate(id) {
+      const t = TEMPLATES_DATA.find(x => x.id === id);
+      if (!t) return;
+      document.getElementById('writing-editor').value = t.content;
+      document.getElementById('active-template-title').textContent = `Đang chọn: ${t.name}`;
+      document.getElementById('word-target').textContent = t.targetWords;
+      if (state.examMode) setExamDuration(t.targetWords === 120 ? 20 : 40);
+      updateWordCount();
+      showToast(`📋 Đã nạp ${t.name}`);
+    }
+
+    function updateWordCount() {
+      const text = document.getElementById('writing-editor').value.trim();
+      localStorage.setItem('b1_draft', text);
+      const words = text ? text.split(/\s+/).length : 0;
+      const target = parseInt(document.getElementById('word-target').textContent, 10) || 250;
+
+      document.getElementById('word-count').textContent = words;
+      const pct = Math.min(100, Math.round((words / target) * 100));
+      const bar = document.getElementById('word-progress');
+      bar.style.width = pct + '%';
+
+      const badge = document.getElementById('word-status-badge');
+      if (words >= target) {
+        bar.className = 'h-full bg-emerald-500 transition-all duration-300';
+        badge.textContent = '✅ Đạt chuẩn từ';
+        badge.className = 'px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300';
+      } else {
+        bar.className = 'h-full bg-indigo-600 transition-all duration-300';
+        badge.textContent = `Thiếu ${target - words} từ`;
+        badge.className = 'px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300';
+      }
+
+      // Check academic connectors
+      const connectors = ['on the one hand', 'on the other hand', 'consequently', 'as a result', 'therefore', 'furthermore', 'in addition', 'for example', 'for instance', 'in conclusion', 'firstly', 'secondly', 'lastly'];
+      const lower = text.toLowerCase();
+      const found = connectors.filter(c => lower.includes(c));
+      document.getElementById('connector-check').textContent = `🔍 Từ nối học thuật đã dùng: ${found.length} cụm (${found.slice(0, 4).join(', ')}${found.length > 4 ? '...' : ''})`;
+    }
+
+    function toggleExamMode() {
+      state.examMode = !state.examMode;
+      const btn = document.getElementById('btn-exam-mode');
+      const timerBox = document.getElementById('exam-timer-box');
+      const sidebar = document.getElementById('template-sidebar');
+      const editorCol = document.getElementById('editor-container');
+
+      if (state.examMode) {
+        btn.className = 'px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs sm:text-sm shadow transition flex items-center gap-1.5';
+        document.getElementById('exam-mode-label').textContent = 'Thoát Phòng thi';
+        timerBox.classList.remove('hidden');
+        timerBox.classList.add('flex');
+        sidebar.classList.add('hidden');
+        editorCol.classList.remove('lg:col-span-8');
+        editorCol.classList.add('lg:col-span-12');
+        setExamDuration(parseInt(document.getElementById('word-target').textContent, 10) === 120 ? 20 : 40);
+        showToast('⏱️ Đã bật Chế độ Phòng thi VSTEP! Ẩn khung gợi ý & bắt đầu tính giờ.');
+      } else {
+        btn.className = 'px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs sm:text-sm shadow transition flex items-center gap-1.5';
+        document.getElementById('exam-mode-label').textContent = 'Bật Chế độ Phòng thi VSTEP';
+        timerBox.classList.add('hidden');
+        timerBox.classList.remove('flex');
+        sidebar.classList.remove('hidden');
+        editorCol.classList.add('lg:col-span-8');
+        editorCol.classList.remove('lg:col-span-12');
+        clearInterval(state.timerInterval);
+      }
+    }
+
+    function setExamDuration(mins) {
+      clearInterval(state.timerInterval);
+      state.timerSeconds = mins * 60;
+      state.timerPaused = false;
+      document.getElementById('btn-pause-timer').textContent = '⏸️';
+      document.getElementById('word-target').textContent = mins === 20 ? '120' : '250';
+      updateWordCount();
+      renderTimer();
+
+      state.timerInterval = setInterval(() => {
+        if (state.timerPaused) return;
+        if (state.timerSeconds > 0) {
+          state.timerSeconds--;
+          renderTimer();
+        } else {
+          clearInterval(state.timerInterval);
+          showToast('⏰ HẾT GIỜ LÀM BÀI VSTEP! Hãy kiểm tra lại số từ và nộp bài.');
+        }
+      }, 1000);
+    }
+
+    function toggleTimerPause() {
+      state.timerPaused = !state.timerPaused;
+      document.getElementById('btn-pause-timer').textContent = state.timerPaused ? '▶️' : '⏸️';
+    }
+
+    function renderTimer() {
+      const m = String(Math.floor(state.timerSeconds / 60)).padStart(2, '0');
+      const s = String(state.timerSeconds % 60).padStart(2, '0');
+      const el = document.getElementById('exam-countdown');
+      el.textContent = `${m}:${s}`;
+      const box = document.getElementById('exam-timer-box');
+      if (state.timerSeconds <= 180) {
+        box.classList.add('bg-rose-600', 'urgent-timer');
+        box.classList.remove('bg-slate-900');
+      } else {
+        box.classList.remove('bg-rose-600', 'urgent-timer');
+        box.classList.add('bg-slate-900');
+      }
+    }
+
+    function copyEditorText() {
+      const text = document.getElementById('writing-editor').value;
+      navigator.clipboard.writeText(text);
+      showToast('📋 Đã sao chép bài viết vào bộ nhớ tạm!');
+    }
+
+    function clearEditor() {
+      document.getElementById('writing-editor').value = '';
+      updateWordCount();
+    }
+
+    function downloadEssayTxt() {
+      const text = document.getElementById('writing-editor').value;
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'B1-104-VSTEP-Writing-Practice.txt';
+      a.click();
+    }
+
+    // =========================================================================
+    // 13. TAB 5: BÀI MẪU & TẢI SOURCE CODE DEPLOY GITHUB
+    // =========================================================================
+    function renderSamples() {
+      const f = document.getElementById('sample-filter').value;
+      const list = SAMPLES_DATA.filter(s => f === 'ALL' || s.type === f);
+
+      document.getElementById('samples-grid').innerHTML = list.map(s => `
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between gap-4">
+          <div class="space-y-2.5">
+            <div class="flex items-center justify-between gap-2">
+              <span class="px-2.5 py-0.5 rounded-md text-xs font-extrabold ${s.type === 'Essay' ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'}">${s.badge}</span>
+              <span class="text-xs font-bold text-slate-400">${s.words} từ</span>
+            </div>
+            <h4 class="font-extrabold text-base text-slate-900 dark:text-white">${s.title}</h4>
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs sm:text-sm text-slate-700 dark:text-slate-300 whitespace-pre-line max-h-60 overflow-y-auto leading-relaxed">${s.text}</div>
+          </div>
+
+          <div class="flex items-center justify-between gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+            <button onclick="speakSample('${s.id}')" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-indigo-100 text-xs font-bold transition">🔊 Nghe bài mẫu</button>
+            <button onclick="loadSampleToStudio('${s.id}')" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition">✍️ Đưa vào Studio</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function speakSample(id) {
+      const s = SAMPLES_DATA.find(x => x.id === id);
+      if (s) speakText(s.text);
+    }
+
+    function loadSampleToStudio(id) {
+      const s = SAMPLES_DATA.find(x => x.id === id);
+      if (!s) return;
+      document.getElementById('writing-editor').value = s.text;
+      document.getElementById('active-template-title').textContent = `Bài mẫu: ${s.title}`;
+      document.getElementById('word-target').textContent = s.type === 'Email' ? '120' : '250';
+      updateWordCount();
+      switchTab('studio');
+      showToast('✍️ Đã đưa bài mẫu vào Studio để bạn luyện tập!');
+    }
+
+    function downloadSelfHtml() {
+      const fullHtml = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+      const blob = new Blob([fullHtml], { type: 'text/html;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'index.html';
+      a.click();
+      showToast('⬇️ Đã tải file index.html! Hãy tải file này lên GitHub.');
+    }
+
+    // Keyboard shortcuts for Flashcards
+    document.addEventListener('keydown', (e) => {
+      if (state.activeTab !== 'flashcards') return;
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
+      if (e.code === 'Space') { e.preventDefault(); flipCard(); }
+      if (e.code === 'ArrowRight') nextCard();
+      if (e.code === 'ArrowLeft') prevCard();
+    });
+  </script>
+</body>
+</html>
